@@ -126,7 +126,27 @@ export default {
               name: 'list.table-list',
               icon: 'table',
               path: '/list',
-              component: './ListTableList',
+              component: './ListTableList'
+            },
+            {
+              name:'系统管理',
+              icon: 'smile',
+              path:'/system',
+              routes:[
+                {
+                  path:'/system/user',
+                  name:'用户管理',
+                  component: './system/userManage'
+                },
+                {
+                  path:'/system/role',
+                  name:'角色管理'
+                },
+                {
+                  path:'/system/authority',
+                  name:'菜单管理'
+                }
+              ]
             },
             {
               component: './404',
@@ -186,5 +206,8 @@ export default {
     basePath: '/',
   },
   proxy: proxy[REACT_APP_ENV || 'dev'],
+
   chainWebpack: webpackPlugin,
+
+
 };
