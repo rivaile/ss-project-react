@@ -38,6 +38,9 @@ const UpdateForm = props => {
 
   const backward = () => setCurrentStep(currentStep - 1);
 
+  // https://www.cnblogs.com/liquanjiang/p/11409792.html
+  // https://blog.csdn.net/qq_30100043/article/details/53391308
+  
   const handleNext = async () => {
     const fieldsValue = await form.validateFields();
     setFormVals({ ...formVals, ...fieldsValue });

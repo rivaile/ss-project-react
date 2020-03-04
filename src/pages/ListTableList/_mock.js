@@ -82,6 +82,8 @@ function getRule(req, res, u) {
     pageSize,
     current: parseInt(`${params.currentPage}`, 10) || 1,
   };
+  // var  json =  res.json(result);
+  // console.dir('--mock--'+json);
   return res.json(result);
 }
 
