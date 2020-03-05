@@ -139,7 +139,6 @@ const TableList = () => {
           <a
             onClick={() => {
               handleUpdateModalVisible(true);
-              console.log("record" + record);
               setStepFormValues(record);
             }}
           >

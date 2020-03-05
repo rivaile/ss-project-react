@@ -1,45 +1,69 @@
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Divider } from 'antd';
+import { Divider, message, Popconfirm, Button, Dropdown, Menu } from 'antd';
 import React, { useState } from 'react';
 import UpdateFrom from './components/UpdateFrom';
-import { queryUserList } from './service';
+import CreateForm from './components/CreateForm';
+import { queryUserList, updateUserById, deleteUserById,addUser } from './service';
 
 const UserList = () => {
 
+  const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
 
   const columns = [
     {
+      title: 'id',
+      dataIndex: 'id',
+      hideInForm: true
+    },
+    {
       title: '用户名',
-      dataIndex: 'username'
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '规则名称为必填项',
-      //     },
-      //   ],
+      dataIndex: 'username',
+      rules: [
+        {
+          required: true,
+          message: '用户名称为必填项',
+        },
+      ],
     },
     {
       title: '电话',
-      dataIndex: 'telephone'
+      dataIndex: 'telephone',
+      rules: [
+        {
+          required: true,
+          message: '用户名称为必填项',
+        },
+      ]
     },
     {
       title: '邮箱',
-      dataIndex: 'mail'
+      dataIndex: 'mail',
+      rules: [
+        {
+          required: true,
+          message: '用户名称为必填项',
+        },
+      ]
     },
 
     {
       title: '部门名称',
       dataIndex: 'deptId',
       sorter: true,
-      hideInForm: true
+      rules: [
+        {
+          required: true,
+          message: '用户名称为必填项',
+        },
+      ]
     },
     {
       title: '状态',
       dataIndex: 'status',
-      hideInForm: true,
       valueEnum: {
         0: {
           text: '冻结',
@@ -54,12 +78,17 @@ const UserList = () => {
           status: 'Success',
         }
       },
+      rules: [
+        {
+          required: true,
+          message: '用户名称为必填项',
+        },
+      ]
     },
     {
-      title: 'remark',
+      title: '备注',
       dataIndex: 'remark',
-      sorter: true,
-      hideInForm: true,
+      sorter: true
     },
     {
       title: '操作人',
@@ -83,22 +112,59 @@ const UserList = () => {
           <a
             onClick={() => {
               setUpdateModalVisible(true);
-              console.log("record" + record);
               setUpdateFormValues(record);
             }}
           >
             修改
               </a>
           <Divider type="vertical" />
-          <a href="">删除</a>
+
+          <Popconfirm
+            title="Are you sure delete this task?"
+            onConfirm={() => {
+              deleteUserById(record.id);
+            }}
+            okText="Yes"
+            cancelText="No">
+            <a href="#">删除</a>
+          </Popconfirm>
         </>
       ),
     },
   ];
 
-  const onUpdate = (value) => {
-    console.dir(value);
+  const onUpdate = async  value => {
+
+    const hide = message.loading('正在修改...');
+    try {
+      await updateUserById(value);
+      hide();
+      message.success("修改成功!")
+      return true;
+    } catch (error) {
+      hide();
+      message.error("修改失败!");
+      return false;
+    }
+
   }
+
+  const handleAdd = async fields => {
+    const hide = message.loading('正在添加');
+  
+    try {
+      await addUser({ ...fields });
+      hide();
+      message.success('添加成功');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('添加失败请重试！');
+      return false;
+    }
+  };
+
+
   return (
     <PageHeaderWrapper>
       <ProTable
@@ -109,16 +175,62 @@ const UserList = () => {
         pagination={{
           defaultPageSize: 3
         }}
+        toolBarRender={(action, { selectedRows }) => [
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined /> 新建
+          </Button>,
+          selectedRows && selectedRows.length > 0 && (
+            <Dropdown
+              overlay={
+                <Menu
+                  onClick={async e => {
+                    if (e.key === 'remove') {
+                      // await handleRemove(selectedRows);
+                      // action.reload();
+                    }
+                  }}
+                  selectedKeys={[]}
+                >
+                  <Menu.Item key="remove">批量删除</Menu.Item>
+                  <Menu.Item key="approval">批量审批</Menu.Item>
+                </Menu>
+              }
+            >
+              <Button>
+                批量操作
+                <DownOutlined />
+              </Button>
+            </Dropdown>
+          ),
+        ]}
+
       />
+      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
+        <ProTable
+          onSubmit={async value => {
+            const success = await handleAdd(value);
+
+            if (success) {
+              handleModalVisible(false);
+
+              // if (actionRef.current) {
+              //   actionRef.current.reload();
+              // }
+            }
+          }}
+          type="form"
+          columns={columns}
+          rowSelection={{}} />
+      </CreateForm>
 
       {updateFormValues && Object.keys(updateFormValues).length ? (
-
         <UpdateFrom
-        initValues={updateFormValues}
+          values={updateFormValues}
           visible={updateModalVisible}
           onUpdate={onUpdate}
           onCancel={() => {
             setUpdateModalVisible(false);
+            setUpdateFormValues({});
           }}
         />
       ) : null}

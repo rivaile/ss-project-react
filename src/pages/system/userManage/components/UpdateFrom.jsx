@@ -1,5 +1,6 @@
 import { Form, Input, Modal, Select, TreeSelect } from 'antd';
 import React from 'react';
+import { useState } from 'react';
 
 const layout = {
     labelCol: {
@@ -10,7 +11,15 @@ const layout = {
     },
 };
 
-const UpdateForm = ({ visible, onUpdate, onCancel,initValues }) => {
+const UpdateForm = ({ visible, onUpdate, onCancel, values }) => {
+    const [formVals, setFromVals] = useState({
+        username: values.username,
+        deptId: values.deptId,
+        telephone: values.telephone,
+        mail: values.mail,
+        status: values.status,
+        remark: values.remark
+    })
     const [form] = Form.useForm();
     return (
         <Modal
@@ -21,9 +30,9 @@ const UpdateForm = ({ visible, onUpdate, onCancel,initValues }) => {
             onCancel={onCancel}
             onOk={() => {
                 form.validateFields()
-                    .then(values => {
+                    .then(value => {
                         form.resetFields();
-                        onUpdate(values);
+                        onUpdate(value);
                     })
                     .catch(info => {
                         // eslint-disable-next-line no-console
@@ -35,13 +44,22 @@ const UpdateForm = ({ visible, onUpdate, onCancel,initValues }) => {
                 form={form}
                 name="form_in_modal"
                 initialValues={{
-                    username: initValues.username,
-                    deptId:1,
-                    telephone:initValues.telephone,
-                    mail:initValues.mail,
-                    status:initValues.status,
-                    remark:initValues.remark
+                    id: values.id,
+                    username: values.username,
+                    deptId: values.deptId,
+                    telephone: values.telephone,
+                    mail: values.mail,
+                    status: values.status,
+                    remark: values.remark
                 }}>
+
+                <Form.Item
+                    name="id"
+                    label="id"
+                    hidden>
+                    <Input hidden />
+                </Form.Item>
+
                 <Form.Item label="所有部门" name="deptId">
                     <TreeSelect
                         treeData={[
@@ -69,7 +87,7 @@ const UpdateForm = ({ visible, onUpdate, onCancel,initValues }) => {
                         },
                     ]}
                 >
-                    <Input disabled={false}/>
+                    <Input disabled />
                 </Form.Item>
                 <Form.Item
                     name="telephone"
