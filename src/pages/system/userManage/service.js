@@ -25,3 +25,9 @@ export async function deleteUserById(userId) {
     method: 'delete'
   });
 }
+
+export async function getDept() {
+  return request('/api/sys/dept');
+}
+
+

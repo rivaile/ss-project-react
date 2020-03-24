@@ -24,7 +24,7 @@ const Login = props => {
     }
 
     if (child.type.typeName === 'LoginTab') {
-      TabChildren.push(child);
+      TabChildren.push(child); 
     } else {
       otherChildren.push(child);
     }

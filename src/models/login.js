@@ -8,6 +8,9 @@ const Model = {
   state: {
     status: undefined,
   },
+  
+  // https://www.jianshu.com/p/b17d8bec13f3
+
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);

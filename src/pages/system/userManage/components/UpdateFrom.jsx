@@ -1,6 +1,6 @@
 import { Form, Input, Modal, Select, TreeSelect } from 'antd';
-import React from 'react';
-import { useState } from 'react';
+import React,{ useState } from 'react';
+import { queryUserList, updateUserById, deleteUserById,addUser ,getDept} from '../service';
 
 const layout = {
     labelCol: {
@@ -11,7 +11,7 @@ const layout = {
     },
 };
 
-const UpdateForm = ({ visible, onUpdate, onCancel, values }) => {
+const UpdateForm = ({ visible, onUpdate, onCancel, values,deptValues}) => {
     const [formVals, setFromVals] = useState({
         username: values.username,
         deptId: values.deptId,
@@ -21,8 +21,11 @@ const UpdateForm = ({ visible, onUpdate, onCancel, values }) => {
         remark: values.remark
     })
     const [form] = Form.useForm();
+
+
     return (
         <Modal
+            
             visible={visible}
             title="编辑用户"
             okText="更新"
@@ -60,20 +63,16 @@ const UpdateForm = ({ visible, onUpdate, onCancel, values }) => {
                     <Input hidden />
                 </Form.Item>
 
-                <Form.Item label="所有部门" name="deptId">
+                <Form.Item label="所有部门" name="deptId" >
                     <TreeSelect
-                        treeData={[
-                            {
-                                title: 'Light',
-                                value: 'light',
-                                children: [
-                                    {
-                                        title: 'Bamboo',
-                                        value: 'bamboo',
-                                    },
-                                ],
-                            },
-                        ]}
+                        // loadData={()=>{
+                        //     getDept().then(function(data){
+                        //         setDeptValue(data);
+                        //         console.dir(data);
+                        //     });
+                        // }}
+                        
+                        treeData={deptValues}
                     />
                 </Form.Item>
 

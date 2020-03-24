@@ -5,13 +5,19 @@ import { Divider, message, Popconfirm, Button, Dropdown, Menu } from 'antd';
 import React, { useState } from 'react';
 import UpdateFrom from './components/UpdateFrom';
 import CreateForm from './components/CreateForm';
-import { queryUserList, updateUserById, deleteUserById,addUser } from './service';
+import { queryUserList, updateUserById, deleteUserById,addUser ,getDept} from './service';
 
 const UserList = () => {
+
 
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
+
+  const [deptValues, setDeptValues] = useState([]);
+
+
+  
 
   const columns = [
     {
@@ -113,6 +119,10 @@ const UserList = () => {
             onClick={() => {
               setUpdateModalVisible(true);
               setUpdateFormValues(record);
+              
+              getDept().then((data)=>{
+                setDeptValues(data)
+              })
             }}
           >
             修改
@@ -165,6 +175,7 @@ const UserList = () => {
   };
 
 
+
   return (
     <PageHeaderWrapper>
       <ProTable
@@ -176,7 +187,12 @@ const UserList = () => {
           defaultPageSize: 3
         }}
         toolBarRender={(action, { selectedRows }) => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
+          <Button type="primary" onClick={() =>{
+            
+ 
+
+            handleModalVisible(true)
+          }}>
             <PlusOutlined /> 新建
           </Button>,
           selectedRows && selectedRows.length > 0 && (
@@ -208,8 +224,9 @@ const UserList = () => {
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProTable
           onSubmit={async value => {
+            
             const success = await handleAdd(value);
-
+            
             if (success) {
               handleModalVisible(false);
 
@@ -226,6 +243,7 @@ const UserList = () => {
       {updateFormValues && Object.keys(updateFormValues).length ? (
         <UpdateFrom
           values={updateFormValues}
+          deptValues = {deptValues}
           visible={updateModalVisible}
           onUpdate={onUpdate}
           onCancel={() => {
@@ -234,7 +252,6 @@ const UserList = () => {
           }}
         />
       ) : null}
-
 
     </PageHeaderWrapper>
   )
