@@ -1,6 +1,6 @@
 import { Form, Input, Modal, Select, TreeSelect } from 'antd';
 import React,{ useState } from 'react';
-import { queryUserList, updateUserById, deleteUserById,addUser ,getDept} from '../service';
+import { queryUserList, updateUserById, deleteUserById,addUser ,getDept} from '../../../../services/admin';
 
 const layout = {
     labelCol: {
@@ -25,7 +25,7 @@ const UpdateForm = ({ visible, onUpdate, onCancel, values,deptValues}) => {
 
     return (
         <Modal
-            
+
             visible={visible}
             title="编辑用户"
             okText="更新"
@@ -71,7 +71,7 @@ const UpdateForm = ({ visible, onUpdate, onCancel, values,deptValues}) => {
                         //         console.dir(data);
                         //     });
                         // }}
-                        
+
                         treeData={deptValues}
                     />
                 </Form.Item>

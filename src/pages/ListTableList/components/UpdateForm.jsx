@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Form, Button, DatePicker, Input, Modal, Radio, Select, Steps } from 'antd';
+import React, {useState} from 'react';
+import {Form, Button, DatePicker, Input, Modal, Radio, Select, Steps} from 'antd';
+
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
+const {Step} = Steps;
+const {TextArea} = Input;
+const {Option} = Select;
 const RadioGroup = Radio.Group;
 const formLayout = {
   labelCol: {
@@ -40,10 +41,10 @@ const UpdateForm = props => {
 
   // https://www.cnblogs.com/liquanjiang/p/11409792.html
   // https://blog.csdn.net/qq_30100043/article/details/53391308
-  
+
   const handleNext = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({ ...formVals, ...fieldsValue });
+    setFormVals({...formVals, ...fieldsValue});
 
     if (currentStep < 2) {
       forward();
@@ -134,7 +135,7 @@ const UpdateForm = props => {
             },
           ]}
         >
-          <Input placeholder="请输入" />
+          <Input placeholder="请输入"/>
         </FormItem>
         <FormItem
           name="desc"
@@ -147,7 +148,7 @@ const UpdateForm = props => {
             },
           ]}
         >
-          <TextArea rows={4} placeholder="请输入至少五个字符" />
+          <TextArea rows={4} placeholder="请输入至少五个字符"/>
         </FormItem>
       </>
     );
@@ -222,9 +223,9 @@ const UpdateForm = props => {
         size="small"
         current={currentStep}
       >
-        <Step title="基本信息" />
-        <Step title="配置规则属性" />
-        <Step title="设定调度周期" />
+        <Step title="基本信息"/>
+        <Step title="配置规则属性"/>
+        <Step title="设定调度周期"/>
       </Steps>
       <Form
         {...formLayout}

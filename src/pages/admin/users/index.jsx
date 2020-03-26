@@ -1,14 +1,13 @@
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import {DownOutlined, PlusOutlined} from '@ant-design/icons';
+import {PageHeaderWrapper} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Divider, message, Popconfirm, Button, Dropdown, Menu } from 'antd';
-import React, { useState } from 'react';
+import {Divider, message, Popconfirm, Button, Dropdown, Menu} from 'antd';
+import React, {useState} from 'react';
 import UpdateFrom from './components/UpdateFrom';
 import CreateForm from './components/CreateForm';
-import { queryUserList, updateUserById, deleteUserById,addUser ,getDept} from './service';
+import {queryUserList, updateUserById, deleteUserById, addUser, getDept} from '../../../services/admin';
 
 const UserList = () => {
-
 
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
@@ -16,8 +15,6 @@ const UserList = () => {
 
   const [deptValues, setDeptValues] = useState([]);
 
-
-  
 
   const columns = [
     {
@@ -119,15 +116,15 @@ const UserList = () => {
             onClick={() => {
               setUpdateModalVisible(true);
               setUpdateFormValues(record);
-              
-              getDept().then((data)=>{
+
+              getDept().then((data) => {
                 setDeptValues(data)
               })
             }}
           >
             修改
-              </a>
-          <Divider type="vertical" />
+          </a>
+          <Divider type="vertical"/>
 
           <Popconfirm
             title="Are you sure delete this task?"
@@ -143,7 +140,7 @@ const UserList = () => {
     },
   ];
 
-  const onUpdate = async  value => {
+  const onUpdate = async value => {
 
     const hide = message.loading('正在修改...');
     try {
@@ -161,9 +158,9 @@ const UserList = () => {
 
   const handleAdd = async fields => {
     const hide = message.loading('正在添加');
-  
+
     try {
-      await addUser({ ...fields });
+      await addUser({...fields});
       hide();
       message.success('添加成功');
       return true;
@@ -173,7 +170,6 @@ const UserList = () => {
       return false;
     }
   };
-
 
 
   return (
@@ -186,14 +182,12 @@ const UserList = () => {
         pagination={{
           defaultPageSize: 3
         }}
-        toolBarRender={(action, { selectedRows }) => [
-          <Button type="primary" onClick={() =>{
-            
- 
+        toolBarRender={(action, {selectedRows}) => [
+          <Button type="primary" onClick={() => {
 
             handleModalVisible(true)
           }}>
-            <PlusOutlined /> 新建
+            <PlusOutlined/> 新建
           </Button>,
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
@@ -214,7 +208,7 @@ const UserList = () => {
             >
               <Button>
                 批量操作
-                <DownOutlined />
+                <DownOutlined/>
               </Button>
             </Dropdown>
           ),
@@ -224,9 +218,8 @@ const UserList = () => {
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProTable
           onSubmit={async value => {
-            
             const success = await handleAdd(value);
-            
+
             if (success) {
               handleModalVisible(false);
 
@@ -237,13 +230,13 @@ const UserList = () => {
           }}
           type="form"
           columns={columns}
-          rowSelection={{}} />
+          rowSelection={{}}/>
       </CreateForm>
 
       {updateFormValues && Object.keys(updateFormValues).length ? (
         <UpdateFrom
           values={updateFormValues}
-          deptValues = {deptValues}
+          deptValues={deptValues}
           visible={updateModalVisible}
           onUpdate={onUpdate}
           onCancel={() => {
