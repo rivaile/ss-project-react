@@ -5,7 +5,7 @@ import {Divider, message, Popconfirm, Button, Dropdown, Menu} from 'antd';
 import React, {useState} from 'react';
 import UpdateFrom from './components/UpdateFrom';
 import CreateForm from './components/CreateForm';
-import {queryUserList, updateUserById, deleteUserById, addUser, getDept} from '../../../services/admin';
+import {queryUserList, updateUserById, deleteUserById, addUser, getDept} from '../../../services/users';
 
 const UserList = () => {
 

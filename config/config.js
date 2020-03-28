@@ -121,19 +121,19 @@ export default {
             {
               name:'系统管理',
               icon: 'smile',
-              path:'/system',
+              path:'/admin1',
               routes:[
                 {
-                  path:'/system/user',
+                  path:'/admin1/users',
                   name:'用户管理',
-                  component: './system/admin'
+                  component: './admin/user'
                 },
                 {
-                  path:'/system/role',
+                  path:'/admin1/role',
                   name:'角色管理'
                 },
                 {
-                  path:'/system/authority',
+                  path:'/admin1/authority',
                   name:'菜单管理'
                 }
               ]

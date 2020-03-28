@@ -93,13 +93,13 @@ describe('getRouteAuthority tests', () => {
     const routes = [
       {
         path: '/nested',
-        authority: ['user', 'users'],
+        authority: ['user', 'user'],
         exact: true,
       },
       {
-        path: '/nested/users',
-        name: 'users',
-        authority: ['users'],
+        path: '/nested/user',
+        name: 'user',
+        authority: ['user'],
         exact: true,
       },
       {
@@ -110,6 +110,6 @@ describe('getRouteAuthority tests', () => {
       },
     ];
     expect(getRouteAuthority('/nested/user', routes)).toEqual(['user']);
-    expect(getRouteAuthority('/nested/users', routes)).toEqual(['users']);
+    expect(getRouteAuthority('/nested/user', routes)).toEqual(['user']);
   });
 });

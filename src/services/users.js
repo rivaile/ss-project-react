@@ -29,5 +29,3 @@ export async function deleteUserById(userId) {
 export async function getDept() {
   return request('/api/sys/dept');
 }
-
-
