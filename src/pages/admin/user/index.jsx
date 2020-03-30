@@ -6,44 +6,44 @@ import {connect} from 'dva';
 
 import UserModal from "@/pages/admin/user/components/UserModal";
 
-const Users = ({dispatch}) => {
+const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
 
   const columns = [
     {
       title: '用户名',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'username',
+      key: 'username',
     },
-    {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: tags => (
-        <span>
-        {tags.map(tag => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </span>
-      ),
-    },
+    // {
+    //   title: 'Age',
+    //   dataIndex: 'age',
+    //   key: 'age',
+    // },
+    // {
+    //   title: 'Address',
+    //   dataIndex: 'address',
+    //   key: 'address',
+    // },
+    // {
+    //   title: 'Tags',
+    //   key: 'tags',
+    //   dataIndex: 'tags',
+    //   render: tags => (
+    //     <span>
+    //     {tags.map(tag => {
+    //       let color = tag.length > 5 ? 'geekblue' : 'green';
+    //       if (tag === 'loser') {
+    //         color = 'volcano';
+    //       }
+    //       return (
+    //         <Tag color={color} key={tag}>
+    //           {tag.toUpperCase()}
+    //         </Tag>
+    //       );
+    //     })}
+    //   </span>
+    //   ),
+    // },
     {
       title: 'Action',
       key: 'action',
@@ -108,7 +108,7 @@ const Users = ({dispatch}) => {
 
       <Table
         columns={columns}
-        dataSource={data}/>
+        dataSource={dataSource}/>
 
     </div>
   )

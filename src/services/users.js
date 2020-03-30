@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export async function queryUserList(params) {
-  return request('/api/sys/user', {
+  return request('/api/sys/user?size=2', {
     params,
   });
 }
