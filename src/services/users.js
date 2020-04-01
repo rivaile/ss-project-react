@@ -1,9 +1,8 @@
 import request from '@/utils/request';
+import {PAGE_SIZE} from '@/constants';
 
-export async function queryUserList(params) {
-  return request('/api/sys/user?size=2', {
-    params,
-  });
+export function queryUserList({ page }) {
+  return request(`/api/sys/user?current=${page}&pageSize=${PAGE_SIZE}`);
 }
 
 export async function addUser(params) {

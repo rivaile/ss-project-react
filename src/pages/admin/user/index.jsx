@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-// import {Table, Popconfirm, Button} from 'antd';
-import {Table, Tag, Button} from 'antd';
+import {Table, Form, Button, Pagination, Input, Radio} from 'antd';
 import {connect} from 'dva';
+import {PAGE_SIZE} from '@/constants';
+import {routerRedux} from 'dva/router';
 
 
 import UserModal from "@/pages/admin/user/components/UserModal";
@@ -14,38 +15,24 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
       dataIndex: 'username',
       key: 'username',
     },
-    // {
-    //   title: 'Age',
-    //   dataIndex: 'age',
-    //   key: 'age',
-    // },
-    // {
-    //   title: 'Address',
-    //   dataIndex: 'address',
-    //   key: 'address',
-    // },
-    // {
-    //   title: 'Tags',
-    //   key: 'tags',
-    //   dataIndex: 'tags',
-    //   render: tags => (
-    //     <span>
-    //     {tags.map(tag => {
-    //       let color = tag.length > 5 ? 'geekblue' : 'green';
-    //       if (tag === 'loser') {
-    //         color = 'volcano';
-    //       }
-    //       return (
-    //         <Tag color={color} key={tag}>
-    //           {tag.toUpperCase()}
-    //         </Tag>
-    //       );
-    //     })}
-    //   </span>
-    //   ),
-    // },
     {
-      title: 'Action',
+      title: '电话',
+      dataIndex: 'telephone',
+      key: 'telephone',
+    },
+    {
+      title: '邮箱',
+      dataIndex: 'mail',
+      key: 'mail',
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+    },
+
+    {
+      title: '操作',
       key: 'action',
       render: (text, record) => (
         <span>
@@ -87,15 +74,64 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
     setVisible(false);
   };
 
+  function pageChangeHandler(page) {
+    dispatch(
+      routerRedux.push({
+          pathname: '/admin1/users',
+          query: {page},
+        }
+      )
+    )
+  }
+
+  const [form] = Form.useForm();
+  const [formLayout, setFormLayout] = useState('horizontal');
+
+  const onFormLayoutChange = ({layout}) => {
+    setFormLayout(layout);
+  };
+
+  const formItemLayout =
+    {
+      labelCol: {
+        span: 6,
+      },
+      wrapperCol: {
+        span: 14,
+      },
+    };
+
   return (
     <div>
+      <div style={{height: 100}}>
+
+        <Form
+          {...formItemLayout}
+          layout="inline"
+          form={form}
+          initialValues={{
+            layout: formLayout,
+          }}
+          onValuesChange={onFormLayoutChange}>
+
+          <Form.Item label="Field A">
+            <Input placeholder="input placeholder"/>
+          </Form.Item>
+          <Form.Item label="Field B">
+            <Input placeholder="input placeholder"/>
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary">Submit</Button>
+          </Form.Item>
+        </Form>
+      </div>
 
       <Button
         type="primary"
         onClick={() => {
           setVisible(true);
-        }}
-      >
+        }}>
         新增
       </Button>
       <UserModal
@@ -105,10 +141,19 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
           setVisible(false);
         }}
       />
-
       <Table
         columns={columns}
-        dataSource={dataSource}/>
+        dataSource={dataSource}
+        pagination={false}
+      />
+
+      <Pagination
+        className="ant-table-pagination"
+        total={total}
+        current={current}
+        pageSize={PAGE_SIZE}
+        onChange={pageChangeHandler}
+      />
 
     </div>
   )

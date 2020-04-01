@@ -1,11 +1,12 @@
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown, Menu, message } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import {DownOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Dropdown, Menu, message} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageHeaderWrapper} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { queryRule, updateRule, addRule, removeRule } from './service';
+import {queryRule, updateRule, addRule, removeRule} from './service';
+
 /**
  * 添加节点
  * @param fields
@@ -15,7 +16,7 @@ const handleAdd = async fields => {
   const hide = message.loading('正在添加');
 
   try {
-    await addRule({ ...fields });
+    await addRule({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -144,7 +145,7 @@ const TableList = () => {
           >
             配置
           </a>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <a href="">订阅警报</a>
         </>
       ),
@@ -166,9 +167,9 @@ const TableList = () => {
         params={{
           sorter,
         }}
-        toolBarRender={(action, { selectedRows }) => [
+        toolBarRender={(action, {selectedRows}) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            <PlusOutlined/> 新建
           </Button>,
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
@@ -188,7 +189,7 @@ const TableList = () => {
               }
             >
               <Button>
-                批量操作 <DownOutlined />
+                批量操作 <DownOutlined/>
               </Button>
             </Dropdown>
           ),

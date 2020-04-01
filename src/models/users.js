@@ -13,14 +13,14 @@ export default {
     }
   },
   effects: {
-    * fetch({payload: {page = 1}}, {call, put}) {
+    * fetch({payload: {page = 1, current = 1}}, {call, put}) {
       const respone = yield call(userservice.queryUserList, {page});
       yield put({
         type: 'save',
         payload: {
-          data:respone.result.records,
-          total:respone.result.total,
-          page:respone.result.pages
+          data: respone.data,
+          total: respone.total,
+          page: respone.current
         }
       });
     }
