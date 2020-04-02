@@ -4,6 +4,17 @@ import {Button, Modal, Form, Input, Radio} from 'antd';
 const UserModal = ({visible, onCreate, onCancel}) => {
 
   const [form] = Form.useForm();
+
+  const layout = {
+
+    labelCol: {
+      span: 6,
+    },
+    wrapperCol: {
+      span: 14,
+    },
+  };
+
   return (
     <Modal
       visible={visible}
@@ -23,6 +34,7 @@ const UserModal = ({visible, onCreate, onCancel}) => {
       }}
     >
       <Form
+        {...layout}
         form={form}
         layout="horizontal"
         name="form_in_modal"
@@ -49,8 +61,15 @@ const UserModal = ({visible, onCreate, onCancel}) => {
         <Form.Item name="deptId" label="部门">
           <Input/>
         </Form.Item>
-        
+
         <Form.Item name="status" label="状态">
+          <Input/>
+        </Form.Item>
+
+        <Form.Item name="status" label="状态">
+          <Input/>
+        </Form.Item>
+        <Form.Item name="remark" label="备注">
           <Input/>
         </Form.Item>
       </Form>

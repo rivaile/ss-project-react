@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
-import {Table, Form, Button, Pagination, Input, Select, Checkbox} from 'antd';
+import {Button, Form, Input, Pagination, Table, Tag} from 'antd';
 import {connect} from 'dva';
 import {PAGE_SIZE} from '@/constants';
-import {routerRedux} from 'dva/router';
 
 import UserModal from "@/pages/admin/user/components/UserModal";
 
@@ -15,7 +14,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
     {
       title: '用户名',
       dataIndex: 'username',
-      key: 'username',
+      key: 'telephone',
     },
     {
       title: '电话',
@@ -28,55 +27,44 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
       key: 'mail',
     },
     {
+      title: '部门',
+      dataIndex: 'deptId',
+      key: 'deptId',
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
+      render: status => {
+        if (status == '0') {
+          return <Tag color="default">冻结</Tag>;
+        }
+        if (status == '1') {
+          return <Tag color="success">正常</Tag>;
+        }
+        if (status == '2') {
+          return <Tag color="error">删除</Tag>;
+        }
+        return <Tag color="default">其他</Tag>;
+      }
     },
-
     {
       title: '操作',
       key: 'action',
       render: (text, record) => (
         <span>
-        <a style={{marginRight: 16}}>Invite {record.name}</a>
-        <a>Delete</a>
+        <a style={{marginRight: 16}}>编辑</a>
+        <a>删除</a>
       </span>
       ),
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-  ];
-
-
   const onCreate = values => {
-    console.log('Received values of form: ', values);
-
     dispatch({
       type: "users/create",
       payload: {
-        values
+        ...values
       }
     });
 
@@ -84,15 +72,13 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
   };
 
   function pageChangeHandler(page) {
-    dispatch(
-      routerRedux.push({
-          pathname: '/admin1/users',
-          query: {page},
-        }
-      )
-    )
+    dispatch({
+      type: "users/fetch",
+      payload: {
+        current: page
+      }
+    })
   }
-
 
   const layout = {
     labelCol: {
@@ -108,7 +94,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
     dispatch({
       type: "users/fetch",
       payload: {
-        values
+        ...values
       }
     })
   };
