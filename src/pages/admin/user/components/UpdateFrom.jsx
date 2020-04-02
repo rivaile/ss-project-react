@@ -1,6 +1,6 @@
 import { Form, Input, Modal, Select, TreeSelect } from 'antd';
 import React,{ useState } from 'react';
-import { queryUserList, updateUserById, deleteUserById,addUser ,getDept} from '../../../../services/users';
+import { fetch, patch, remove,create ,getDept} from '../../../../services/users';
 
 const layout = {
     labelCol: {

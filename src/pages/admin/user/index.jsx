@@ -1,13 +1,15 @@
 import React, {useState} from 'react';
-import {Table, Form, Button, Pagination, Input, Radio} from 'antd';
+import {Table, Form, Button, Pagination, Input, Select, Checkbox} from 'antd';
 import {connect} from 'dva';
 import {PAGE_SIZE} from '@/constants';
 import {routerRedux} from 'dva/router';
 
-
 import UserModal from "@/pages/admin/user/components/UserModal";
 
 const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
+
+  const [form] = Form.useForm();
+  const [visible, setVisible] = useState(false);
 
   const columns = [
     {
@@ -67,10 +69,17 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
     },
   ];
 
-  const [visible, setVisible] = useState(false);
 
   const onCreate = values => {
     console.log('Received values of form: ', values);
+
+    dispatch({
+      type: "users/create",
+      payload: {
+        values
+      }
+    });
+
     setVisible(false);
   };
 
@@ -84,48 +93,61 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
     )
   }
 
-  const [form] = Form.useForm();
-  const [formLayout, setFormLayout] = useState('horizontal');
 
-  const onFormLayoutChange = ({layout}) => {
-    setFormLayout(layout);
+  const layout = {
+    labelCol: {
+      span: 8,
+    },
+    wrapperCol: {
+      span: 16,
+    },
   };
 
-  const formItemLayout =
-    {
-      labelCol: {
-        span: 6,
-      },
-      wrapperCol: {
-        span: 14,
-      },
-    };
+  const onFinish = values => {
+    console.log('Success:', values);
+    dispatch({
+      type: "users/fetch",
+      payload: {
+        values
+      }
+    })
+  };
+
+  const onFinishFailed = errorInfo => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const onReset = () => {
+    form.resetFields();
+  };
 
   return (
     <div>
-      <div style={{height: 100}}>
+      <Form
+        style={{height: 100}}
+        {...layout}
+        form={form}
+        layout="inline"
+        name="basic"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}>
 
-        <Form
-          {...formItemLayout}
-          layout="inline"
-          form={form}
-          initialValues={{
-            layout: formLayout,
-          }}
-          onValuesChange={onFormLayoutChange}>
+        <Form.Item
+          label="用户名"
+          name="username">
+          <Input placeholder="请输入用户名"/>
+        </Form.Item>
 
-          <Form.Item label="Field A">
-            <Input placeholder="input placeholder"/>
-          </Form.Item>
-          <Form.Item label="Field B">
-            <Input placeholder="input placeholder"/>
-          </Form.Item>
+        <Form.Item
+          label="电话号码"
+          name="telephone">
+          <Input placeholder="请输入电话号码"/>
+        </Form.Item>
 
-          <Form.Item>
-            <Button type="primary">Submit</Button>
-          </Form.Item>
-        </Form>
-      </div>
+        <Button type="primary" htmlType="submit">查询</Button>
+        <Button htmlType="button" onClick={onReset}>重置</Button>
+
+      </Form>
 
       <Button
         type="primary"
@@ -134,6 +156,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
         }}>
         新增
       </Button>
+
       <UserModal
         visible={visible}
         onCreate={onCreate}

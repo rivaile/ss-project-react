@@ -2,17 +2,17 @@ import React, {useState} from 'react';
 import {Button, Modal, Form, Input, Radio} from 'antd';
 
 const UserModal = ({visible, onCreate, onCancel}) => {
+
   const [form] = Form.useForm();
   return (
     <Modal
       visible={visible}
-      title="Create a new collection"
-      okText="Create"
-      cancelText="Cancel"
+      title="创建用户"
+      okText="确认"
+      cancelText="取消"
       onCancel={onCancel}
       onOk={() => {
-        form
-          .validateFields()
+        form.validateFields()
           .then(values => {
             form.resetFields();
             onCreate(values);
@@ -24,34 +24,37 @@ const UserModal = ({visible, onCreate, onCancel}) => {
     >
       <Form
         form={form}
-        layout="vertical"
+        layout="horizontal"
         name="form_in_modal"
         initialValues={{
-          modifier: 'public',
-        }}
-      >
+          username: '',
+        }}>
         <Form.Item
-          name="title"
-          label="Title"
+          name="username"
+          label="用户名"
           rules={[
             {
               required: true,
-              message: 'Please input the title of collection!',
+              message: '请输入用户名!',
             },
           ]}
         >
           <Input/>
         </Form.Item>
-        <Form.Item name="description" label="Description">
-          <Input type="textarea"/>
+
+        <Form.Item name="mail" label="邮箱">
+          <Input/>
         </Form.Item>
-        <Form.Item name="modifier" className="collection-create-form_last-form-item">
-          <Radio.Group>
-            <Radio value="public">Public</Radio>
-            <Radio value="private">Private</Radio>
-          </Radio.Group>
+
+        <Form.Item name="deptId" label="部门">
+          <Input/>
+        </Form.Item>
+        
+        <Form.Item name="status" label="状态">
+          <Input/>
         </Form.Item>
       </Form>
+
     </Modal>
   );
 };

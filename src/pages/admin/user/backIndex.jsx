@@ -5,7 +5,7 @@ import {Divider, message, Popconfirm, Button, Dropdown, Menu} from 'antd';
 import React, {useState} from 'react';
 import UpdateFrom from './components/UpdateFrom';
 import CreateForm from './components/CreateForm';
-import {queryUserList, updateUserById, deleteUserById, addUser, getDept} from '../../../services/users';
+import {fetch, patch, remove, create, getDept} from '../../../services/users';
 
 const UserList = () => {
 
@@ -129,7 +129,7 @@ const UserList = () => {
           <Popconfirm
             title="Are you sure delete this task?"
             onConfirm={() => {
-              deleteUserById(record.id);
+              remove(record.id);
             }}
             okText="Yes"
             cancelText="No">
@@ -144,7 +144,7 @@ const UserList = () => {
 
     const hide = message.loading('正在修改...');
     try {
-      await updateUserById(value);
+      await patch(value);
       hide();
       message.success("修改成功!")
       return true;
@@ -160,7 +160,7 @@ const UserList = () => {
     const hide = message.loading('正在添加');
 
     try {
-      await addUser({...fields});
+      await create({...fields});
       hide();
       message.success('添加成功');
       return true;
@@ -177,7 +177,7 @@ const UserList = () => {
       <ProTable
         headerTitle="用户列表"
         columns={columns}
-        request={params => queryUserList(params)}
+        request={params => fetch(params)}
         rowSelection={{}}
         pagination={{
           defaultPageSize: 3

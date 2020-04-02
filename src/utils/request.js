@@ -46,7 +46,7 @@ const errorHandler = error => {
 };
 
 /**
- * 配置request请求时的默认参数
+ * 配置request请求时的默认参数 https://zhuanlan.zhihu.com/p/88997003
  */
 const request = extend({
   errorHandler,

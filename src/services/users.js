@@ -1,25 +1,27 @@
 import request from '@/utils/request';
-import {PAGE_SIZE} from '@/constants';
 
-export function queryUserList({ page }) {
-  return request(`/api/sys/user?current=${page}&pageSize=${PAGE_SIZE}`);
+export function fetch(params) {
+  return request(`/api/sys/user`, {
+    method: 'get',
+    params: params
+  });
 }
 
-export async function addUser(params) {
+export async function create(params) {
   return request('/api/sys/user', {
     method: 'post',
     data: params
   });
 }
 
-export async function updateUserById(params) {
+export async function patch(params) {
   return request('/api/sys/user', {
     method: 'put',
     data: params
   });
 }
 
-export async function deleteUserById(userId) {
+export async function remove(userId) {
   return request(`/api/sys/user/${userId}`, {
     method: 'delete'
   });

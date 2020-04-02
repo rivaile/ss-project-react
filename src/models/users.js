@@ -1,4 +1,4 @@
-import * as userservice from '@/services/users';
+import * as usersService from '@/services/users';
 
 export default {
   namespace: 'users',
@@ -13,8 +13,8 @@ export default {
     }
   },
   effects: {
-    * fetch({payload: {page = 1, current = 1}}, {call, put}) {
-      const respone = yield call(userservice.queryUserList, {page});
+    * fetch({payload: {page = 1, current = 1, values}}, {call, put}) {
+      const respone = yield call(usersService.fetch, values);
       yield put({
         type: 'save',
         payload: {
@@ -23,8 +23,13 @@ export default {
           page: respone.current
         }
       });
-    }
+    },
+    * create({payload: values}, {call, put}) {
+      yield call(usersService.create, values);
+      yield put({type: 'fetch'});
+    },
   },
+
   subscriptions: {
     setup({dispatch, history}) {
       console.log('setup');
