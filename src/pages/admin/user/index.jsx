@@ -14,6 +14,11 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
 
   const columns = [
     {
+      title: 'id',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
       title: '用户名',
       dataIndex: 'username',
       key: 'telephone',
@@ -39,7 +44,6 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
       key: 'status',
       render: status => {
 
-
         switch (status) {
           case 0:
             return <Tag color="default">冻结</Tag>;
@@ -64,7 +68,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
           <UserModal record={record} onCreate={editHandler.bind(null, record.id)}>
             <a style={{marginRight: 16}}>编辑</a>
           </UserModal>
-          <Popconfirm title="Confirm to delete?"
+          <Popconfirm title="确定删除该用户嘛?"
                       onConfirm={deleteHandler.bind(null, record.id)}>
             <a>删除</a>
           </Popconfirm>
@@ -72,6 +76,13 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
       ),
     },
   ];
+
+  const deleteHandler = (id) => {
+    dispatch({
+      type: 'users/remove',
+      payload: id,
+    });
+  };
 
   const createHandler = values => {
     dispatch({
@@ -236,7 +247,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
         className="ant-table-pagination"
         total={total}
         current={current}
-        pageSize={PAGE_SIZE}
+        pageSize={10}
         onChange={pageChangeHandler}
       />
 

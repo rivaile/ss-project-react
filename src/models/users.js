@@ -38,7 +38,12 @@ export default {
 
     * reload(action, {put, select}) {
       const page = yield select(state => state.users.page);
-      yield put({type: 'fetch', payload: {page}});
+      yield put({type: 'fetch', payload: {current: page}});
+    },
+
+    * remove({payload: id}, {call, put}) {
+      yield call(usersService.remove, id);
+      yield put({type: 'reload'});
     },
   },
 
