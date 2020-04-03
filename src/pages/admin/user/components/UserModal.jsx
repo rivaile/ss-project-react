@@ -37,6 +37,7 @@ const UserModal = ({onCreate, record, children}) => {
             .then(values => {
               form.resetFields();
               onCreate(values);
+              hideModelHandler();
             })
             .catch(info => {
               console.log('Validate Failed:', info);

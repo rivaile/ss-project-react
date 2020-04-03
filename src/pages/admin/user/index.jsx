@@ -238,6 +238,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
         </Button>
       </UserModal>
       <Table
+        loading={loading}
         columns={columns}
         dataSource={dataSource}
         pagination={false}
@@ -258,6 +259,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
 function mapStateToProps(state) {
   const {list, total, page} = state.users;
   return {
+    loading: state.loading.models.users,
     list,
     total,
     page
