@@ -1,14 +1,16 @@
 import React, {useState} from 'react';
-import {Button, Form, Input, Pagination, Table, Tag} from 'antd';
+import {Button, Col, Form, Input, Pagination, Row, Select, Table, Tag, TreeSelect, Popconfirm} from 'antd';
 import {connect} from 'dva';
 import {PAGE_SIZE} from '@/constants';
-
 import UserModal from "@/pages/admin/user/components/UserModal";
+
+const {Option} = Select;
 
 const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
 
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
+  const [record, setRecord] = useState({});
 
   const columns = [
     {
@@ -36,16 +38,22 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
       dataIndex: 'status',
       key: 'status',
       render: status => {
-        if (status == '0') {
-          return <Tag color="default">冻结</Tag>;
+
+
+        switch (status) {
+          case 0:
+            return <Tag color="default">冻结</Tag>;
+            break;
+          case 1:
+            return <Tag color="success">正常</Tag>;
+            break;
+          case 2:
+            return <Tag color="error">删除</Tag>;
+            break;
+          default:
+            return <Tag color="default">其他</Tag>;
+            break;
         }
-        if (status == '1') {
-          return <Tag color="success">正常</Tag>;
-        }
-        if (status == '2') {
-          return <Tag color="error">删除</Tag>;
-        }
-        return <Tag color="default">其他</Tag>;
       }
     },
     {
@@ -53,22 +61,23 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
       key: 'action',
       render: (text, record) => (
         <span>
-        <a style={{marginRight: 16}}>编辑</a>
-        <a>删除</a>
+          <UserModal record={record} onCreate={editHandler.bind(null, record.id)}>
+            <a style={{marginRight: 16}}>编辑</a>
+          </UserModal>
+          <Popconfirm title="Confirm to delete?"
+                      onConfirm={deleteHandler.bind(null, record.id)}>
+            <a>删除</a>
+          </Popconfirm>
       </span>
       ),
     },
   ];
 
-  const onCreate = values => {
+  const createHandler = values => {
     dispatch({
       type: "users/create",
-      payload: {
-        ...values
-      }
+      payload: values
     });
-
-    setVisible(false);
   };
 
   function pageChangeHandler(page) {
@@ -103,53 +112,120 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
     console.log('Failed:', errorInfo);
   };
 
-  const onReset = () => {
-    form.resetFields();
-  };
+  function editHandler(id, values) {
+    dispatch({
+      type: 'users/patch',
+      payload: {id, values},
+    });
+  }
 
   return (
     <div>
       <Form
-        style={{height: 100}}
+        className="ant-advanced-search-form"
         {...layout}
         form={form}
-        layout="inline"
         name="basic"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}>
 
-        <Form.Item
-          label="用户名"
-          name="username">
-          <Input placeholder="请输入用户名"/>
-        </Form.Item>
+        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item
+              label="用户名"
+              name="username">
+              <Input placeholder="请输入用户名"/>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="电话号码"
+              name="telephone">
+              <Input placeholder="请输入电话号码"/>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="邮箱"
+              name="mail">
+              <Input placeholder="请输入邮箱"/>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="部门"
+              name="deptId">
 
-        <Form.Item
-          label="电话号码"
-          name="telephone">
-          <Input placeholder="请输入电话号码"/>
-        </Form.Item>
+              <TreeSelect
+                placeholder="请选择部门"
+                treeData={[
+                  {
+                    title: '技术部',
+                    value: '0',
+                    children: [
+                      {
+                        title: 'android',
+                        value: '1',
+                      },
+                      {
+                        title: 'java',
+                        value: '2',
+                      },
+                    ],
+                  },
+                ]}
+              />
+            </Form.Item>
+          </Col>
 
-        <Button type="primary" htmlType="submit">查询</Button>
-        <Button htmlType="button" onClick={onReset}>重置</Button>
+          <Col span={8}>
+            <Form.Item
+              label="状态"
+              name="status">
+              <Select
+                placeholder="请选择状态"
+                allowClear>
+                <Option value="0">冻结</Option>
+                <Option value="1">正常</Option>
+                <Option value="2">删除</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
 
+        <Row>
+          <Col
+            span={24}
+            style={{
+              textAlign: 'right',
+            }}>
+            <Button type="primary" htmlType="submit">查询</Button>
+            <Button
+              style={{
+                marginLeft: 8,
+              }}
+              onClick={() => {
+                form.resetFields();
+              }}
+            >
+              重置
+            </Button>
+          </Col>
+        </Row>
       </Form>
 
-      <Button
-        type="primary"
-        onClick={() => {
-          setVisible(true);
-        }}>
-        新增
-      </Button>
-
       <UserModal
-        visible={visible}
-        onCreate={onCreate}
-        onCancel={() => {
-          setVisible(false);
-        }}
-      />
+        record={{}}
+        onCreate={createHandler}
+      >
+        <Button
+          type="primary"
+          onClick={() => {
+            setVisible(true);
+          }}>
+          新增
+        </Button>
+      </UserModal>
       <Table
         columns={columns}
         dataSource={dataSource}

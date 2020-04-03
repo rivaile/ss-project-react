@@ -14,10 +14,10 @@ export async function create(params) {
   });
 }
 
-export async function patch(params) {
-  return request('/api/sys/user', {
+export async function patch(id, values) {
+  return request(`/api/sys/user/${id}`, {
     method: 'put',
-    data: params
+    data: values
   });
 }
 
