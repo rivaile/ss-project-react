@@ -1,63 +1,100 @@
 import React, {useState} from 'react';
-import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tag, TreeSelect} from 'antd';
+import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tree, TreeSelect} from 'antd';
 import {connect} from 'dva';
 import UserModal from "@/pages/admin/user/components/UserModal";
 
 const {Option} = Select;
+const {TreeNode} = Tree;
 
-const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
+const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
 
   const [form] = Form.useForm();
-  const [visible, setVisible] = useState(false);
+
+  const treeData = [
+
+    {
+      title: 'parent 1',
+      key: '0-0',
+      children: [
+        {
+          title: 'parent 1-0',
+          key: '0-0-0',
+          disabled: true,
+          children: [
+            {
+              title: 'leaf',
+              key: '0-0-0-0',
+              disableCheckbox: true,
+            },
+            {
+              title: 'leaf',
+              key: '0-0-0-1',
+            },
+          ],
+        },
+        {
+          title: 'parent 1-1',
+          key: '0-0-1',
+          children: [
+            {
+              title: (
+                <span
+                  style={{
+                    color: '#1890ff',
+                  }}
+                >
+                sss
+              </span>
+              ),
+              key: '0-0-1-0',
+            },
+          ],
+        },
+      ],
+    },
+  ];
 
   const columns = [
     {
-      title: '用户ID',
+      title: '角色ID',
       dataIndex: 'id',
       key: 'id',
     },
     {
-      title: '用户名',
-      dataIndex: 'username',
-      key: 'telephone',
+      title: '角色名称',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
-      title: '电话',
-      dataIndex: 'telephone',
-      key: 'telephone',
+      title: '角色类型',
+      dataIndex: 'type',
+      key: 'type',
     },
     {
-      title: '邮箱',
-      dataIndex: 'mail',
-      key: 'mail',
-    },
-    {
-      title: '部门',
-      dataIndex: 'deptId',
-      key: 'deptId',
-    },
-    {
-      title: '状态',
+      title: '角色状态',
       dataIndex: 'status',
       key: 'status',
-      render: status => {
-
-        switch (status) {
-          case 0:
-            return <Tag color="default">冻结</Tag>;
-            break;
-          case 1:
-            return <Tag color="success">正常</Tag>;
-            break;
-          case 2:
-            return <Tag color="error">删除</Tag>;
-            break;
-          default:
-            return <Tag color="default">其他</Tag>;
-            break;
-        }
-      }
     },
+
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      key: 'remark',
+    },
+
+
+    {
+      title: '操作者',
+      dataIndex: 'operator',
+      key: 'operator',
+    },
+
+    {
+      title: '操作时间',
+      dataIndex: 'operateTime',
+      key: 'operateTime',
+    },
+
     {
       title: '操作',
       key: 'action',
@@ -134,7 +171,17 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
     },
   };
 
+
+  const onSelect = (selectedKeys, info) => {
+    console.log('selected', selectedKeys, info);
+  };
+
+  const onCheck = (checkedKeys, info) => {
+    console.log('onCheck', checkedKeys, info);
+  };
+
   return (
+
     <div>
       <Form
         className="ant-advanced-search-form"
@@ -205,6 +252,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
                 <Option value="0">冻结</Option>
                 <Option value="1">正常</Option>
                 <Option value="2">删除</Option>
+
               </Select>
             </Form.Item>
           </Col>
@@ -249,38 +297,69 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
         </Button>
 
       </div>
-      <Table
-        rowSelection={{
-          type: "checkbox",
-          ...rowSelection,
-        }}
-        rowKey={record => record.id}
-        loading={loading}
-        columns={columns}
-        dataSource={dataSource}
-        pagination={false}
-      />
 
-      <Pagination
-        className="ant-table-pagination"
-        total={total}
-        current={current}
-        pageSize={10}
-        onChange={pageChangeHandler}
-      />
+      <Row gutter={24}>
+
+        <Col span={18}>
+
+          <Table
+            rowSelection={{
+              type: "checkbox",
+              ...rowSelection,
+            }}
+            rowKey={record => record.id}
+            loading={loading}
+            columns={columns}
+            dataSource={dataSource}
+            pagination={false}
+            onRow={record => {
+              return {
+                onClick: event => {
+                  console.dir(record);
+                }, // 点击行
+              };
+            }}
+
+          />
+
+          <Pagination
+            className="ant-table-pagination"
+            total={total}
+            current={current}
+            pageSize={10}
+            onChange={pageChangeHandler}
+          />
+
+        </Col>
+
+        <Col span={6}>
+
+          <Tree
+            checkable
+            defaultExpandedKeys={['0-0-0', '0-0-1']}
+            defaultSelectedKeys={['0-0-0', '0-0-1']}
+            defaultCheckedKeys={['0-0-0', '0-0-1']}
+            onSelect={onSelect}
+            onCheck={onCheck}
+            treeData={treeData}
+          />
+
+        </Col>
+      </Row>
+
 
     </div>
   )
 };
 
 function mapStateToProps(state) {
-  const {list, total, page} = state.users;
+  const {list, total, page} = state.roles;
   return {
-    loading: state.loading.models.users,
+    loading: state.loading.models.roles,
     list,
     total,
     page
   }
 }
 
-export default connect(mapStateToProps)(Users);
+export default connect(mapStateToProps)(Roles);

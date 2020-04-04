@@ -4,10 +4,11 @@ import slash from 'slash2';
 import themePluginConfig from './themePluginConfig';
 import proxy from './proxy';
 import webpackPlugin from './plugin.config';
-const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
+
+const {pwa} = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
-const {  REACT_APP_ENV } = process.env;
+const {REACT_APP_ENV} = process.env;
 const plugins = [
   ['umi-plugin-antd-icon-config', {}],
   [
@@ -32,11 +33,11 @@ const plugins = [
       },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -55,7 +56,6 @@ const plugins = [
     },
   ],
 ];
-
 
 
 export default {
@@ -119,22 +119,23 @@ export default {
               component: './ListTableList'
             },
             {
-              name:'系统管理',
+              name: '系统管理',
               icon: 'smile',
-              path:'/admin1',
-              routes:[
+              path: '/admin1',
+              routes: [
                 {
-                  path:'/admin1/users',
-                  name:'用户管理',
+                  path: '/admin1/users',
+                  name: '用户管理',
                   component: './admin/user'
                 },
                 {
-                  path:'/admin1/role',
-                  name:'角色管理'
+                  path: '/admin1/role',
+                  name: '角色管理',
+                  component: './admin/role'
                 },
                 {
-                  path:'/admin1/authority',
-                  name:'菜单管理'
+                  path: '/admin1/authority',
+                  name: '菜单管理'
                 }
               ]
             },
