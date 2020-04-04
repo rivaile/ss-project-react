@@ -28,9 +28,8 @@ const codeMessage = {
  */
 const errorHandler = error => {
   const {response} = error;
-
   if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
+    const errorText = codeMessage[response.status] || response.msg;
     const {status, url} = response;
     notification.error({
       message: `请求错误 ${status}: ${url}`,
@@ -48,10 +47,29 @@ const errorHandler = error => {
 /**
  * 配置request请求时的默认参数 https://zhuanlan.zhihu.com/p/88997003
  */
-const request = extend({
-  errorHandler,
-  // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
-});
+
+/**
+ * @param {string} url
+ * @param {objects} options
+ */
+async function request(url, options) {
+
+  const request = extend({
+    errorHandler,
+    // 默认错误处理
+    credentials: 'include', // 默认请求是否带上cookie
+  });
+
+  const response = await request(url, options);
+
+  if (response.status != '200') {
+    notification.error({
+      message: `请求错误 ${response.status}: ${url}`,
+      description: response.message,
+    });
+  }
+
+  return response;
+}
 
 export default request;
