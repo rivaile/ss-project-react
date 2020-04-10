@@ -30,3 +30,8 @@ export async function remove(userId) {
 export async function getDept() {
   return request('/api/system/dept');
 }
+
+
+export async function auths(roleId) {
+  return request(`/api/system/role/${roleId}`);
+}

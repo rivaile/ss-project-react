@@ -134,8 +134,9 @@ export default {
                   component: './admin/role'
                 },
                 {
-                  path: '/admin1/authority',
-                  name: '菜单管理'
+                  path: '/admin1/auth',
+                  name: '菜单管理',
+                  component: './admin/auth'
                 }
               ]
             },

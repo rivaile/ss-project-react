@@ -27,6 +27,10 @@ export default {
       });
     },
 
+    * auth({payload: values}, {call, put}) {
+      const respone = yield call(rolesService.auths, values);
+      console.dir(respone);
+    },
   },
 
   subscriptions: {

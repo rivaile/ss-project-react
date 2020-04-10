@@ -4,7 +4,7 @@ import {connect} from 'dva';
 import UserModal from "@/pages/admin/user/components/UserModal";
 
 const {Option} = Select;
-const {TreeNode} = Tree;
+const {TreeNode,DirectoryTree} = Tree;
 
 const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
 
@@ -19,12 +19,12 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
         {
           title: 'parent 1-0',
           key: '0-0-0',
-          disabled: true,
           children: [
             {
               title: 'leaf',
               key: '0-0-0-0',
-              disableCheckbox: true,
+              checked: true,
+              // disableCheckbox: true,
             },
             {
               title: 'leaf',
@@ -37,15 +37,7 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
           key: '0-0-1',
           children: [
             {
-              title: (
-                <span
-                  style={{
-                    color: '#1890ff',
-                  }}
-                >
-                sss
-              </span>
-              ),
+              title: 'ss',
               key: '0-0-1-0',
             },
           ],
@@ -53,6 +45,7 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
       ],
     },
   ];
+
 
   const columns = [
     {
@@ -165,6 +158,13 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
     });
   }
 
+  function authHandler(id) {
+    dispatch({
+      type: 'roles/auth',
+      payload: id,
+    });
+  }
+
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -179,6 +179,7 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
   const onCheck = (checkedKeys, info) => {
     console.log('onCheck', checkedKeys, info);
   };
+
 
   return (
 
@@ -315,8 +316,8 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
             onRow={record => {
               return {
                 onClick: event => {
-                  console.dir(record);
-                }, // 点击行
+                  authHandler(record.id);
+                },
               };
             }}
 
@@ -336,10 +337,9 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
 
           <Tree
             checkable
-            defaultExpandedKeys={['0-0-0', '0-0-1']}
-            defaultSelectedKeys={['0-0-0', '0-0-1']}
-            defaultCheckedKeys={['0-0-0', '0-0-1']}
-            onSelect={onSelect}
+            // defaultExpandedKeys={['0-0-0', '0-0-1']}
+            defaultExpandedKeys={['0-0']}
+            defaultCheckedKeys={['0-0-1']}
             onCheck={onCheck}
             treeData={treeData}
           />
