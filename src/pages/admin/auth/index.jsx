@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tree, TreeSelect} from 'antd';
 import {connect} from 'dva';
-import UserModal from "@/pages/admin/user/components/UserModal";
+import ModuleModal from "@/pages/admin/auth/components/ModuleModal";
 
 const {Option} = Select;
 const {TreeNode, DirectoryTree} = Tree;
@@ -93,9 +93,9 @@ const Auths = ({dispatch, list: dataSource, loading, total, page: current, data,
       key: 'action',
       render: (text, record) => (
         <span>
-          <UserModal record={record} onCreate={editHandler.bind(null, record.id)}>
+          <ModuleModal record={record} onCreate={editHandler.bind(null, record.id)}>
             <a style={{marginRight: 16}}>编辑</a>
-          </UserModal>
+          </ModuleModal>
           <Popconfirm title="确定删除该用户嘛?"
                       onConfirm={deleteHandler.bind(null, record.id)}>
             <a>删除</a>
@@ -114,7 +114,7 @@ const Auths = ({dispatch, list: dataSource, loading, total, page: current, data,
 
   const createHandler = values => {
     dispatch({
-      type: "users/create",
+      type: "auths/createAuthModule",
       payload: values
     });
   };
@@ -190,14 +190,15 @@ const Auths = ({dispatch, list: dataSource, loading, total, page: current, data,
         <span>权限模板列表</span>
 
         <div>
-          <UserModal
+          <ModuleModal
             record={{}}
+            moduleTree={module.data}
             onCreate={createHandler}>
             <Button
               type="primary" size="default">
               新增
             </Button>
-          </UserModal>
+          </ModuleModal>
 
           <Button type="primary" loading={loading} size="default"
                   style={{
@@ -243,7 +244,6 @@ const Auths = ({dispatch, list: dataSource, loading, total, page: current, data,
               },
             };
           }}
-
         />
 
         <Pagination
