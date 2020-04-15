@@ -4,9 +4,9 @@ import {connect} from 'dva';
 import UserModal from "@/pages/admin/user/components/UserModal";
 
 const {Option} = Select;
-const {TreeNode,DirectoryTree} = Tree;
+const {TreeNode, DirectoryTree} = Tree;
 
-const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
+const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths: auths}) => {
 
   const [form] = Form.useForm();
 
@@ -353,12 +353,13 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current}) => {
 };
 
 function mapStateToProps(state) {
-  const {list, total, page} = state.roles;
+  const {list, total, page, auths} = state.roles;
   return {
     loading: state.loading.models.roles,
     list,
     total,
-    page
+    page,
+    auths
   }
 }
 

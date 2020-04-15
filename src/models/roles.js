@@ -6,7 +6,8 @@ export default {
   state: {
     list: [],
     total: null,
-    page: null
+    page: null,
+    auths: []
   },
   reducers: {
     save(state, {payload: {data: list, total, page}}) {
@@ -29,7 +30,8 @@ export default {
 
     * auth({payload: values}, {call, put}) {
       const respone = yield call(rolesService.auths, values);
-      console.dir(respone);
+      this.state.auths = respone.data;
+
     },
   },
 

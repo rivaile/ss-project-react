@@ -55,14 +55,22 @@ const ModuleModal = ({onCreate, record, moduleTree, children}) => {
         size="middle"
         form={form}
         initialValues={{
-          // username: record.username,
-          // telephone: record.telephone,
-          // mail: record.mail,
-          // deptId: record.deptId,
-          // status: record.status,
-          // remark: record.remark,
+          id: record.id,
+          parentId: record.parentId,
+          name: record.name,
+          seq: record.seq,
+          status: record.status,
+          remark: record.remark,
         }}>
 
+
+          <Form.Item
+            style={{display: "none"}}
+            name="id"
+            label="id"
+          >
+          <Input/>
+          </Form.Item>
         <Row>
              <Col span={12}>
             <Form.Item
@@ -70,11 +78,12 @@ const ModuleModal = ({onCreate, record, moduleTree, children}) => {
               label="上级模块"
               rules={[
                 {
-                  required: true,
                   message: '请选择上级模块!',
                 },
               ]}>
               <TreeSelect
+                allowClear={true}
+                placeholder='请选择上级模块'
                 treeData={moduleTree}
               />
           </Form.Item>
@@ -139,8 +148,9 @@ const ModuleModal = ({onCreate, record, moduleTree, children}) => {
       </Row>
       </Form>
     </Modal>
-    </span>
-  );
+</span>
+  )
+    ;
 };
 
 export default ModuleModal;
