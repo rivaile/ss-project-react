@@ -21,14 +21,18 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
           key: '0-0-0',
           children: [
             {
-              title: 'leaf',
+              title: 'leaf1',
               key: '0-0-0-0',
               checked: true,
               // disableCheckbox: true,
             },
             {
-              title: 'leaf',
+              title: 'leaf2',
               key: '0-0-0-1',
+              children:[{
+                title: 'leaf100',
+                key: '0-0-0-0-0',
+              }]
             },
           ],
         },
