@@ -6,7 +6,7 @@ import UserModal from "@/pages/admin/user/components/UserModal";
 const {Option} = Select;
 const {TreeNode, DirectoryTree} = Tree;
 
-const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths: auths}) => {
+const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths: auths,checkedKeys}) => {
 
   const [form] = Form.useForm();
 
@@ -29,7 +29,7 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
             {
               title: 'leaf2',
               key: '0-0-0-1',
-              children:[{
+              children: [{
                 title: 'leaf100',
                 key: '0-0-0-0-0',
               }]
@@ -342,10 +342,10 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
           <Tree
             checkable
             // defaultExpandedKeys={['0-0-0', '0-0-1']}
-            defaultExpandedKeys={['0-0']}
-            defaultCheckedKeys={['0-0-1']}
+            // defaultExpandedKeys={['0-0']}
+            defaultCheckedKeys={checkedKeys}
             onCheck={onCheck}
-            treeData={treeData}
+            treeData={auths}
           />
 
         </Col>
@@ -357,13 +357,14 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
 };
 
 function mapStateToProps(state) {
-  const {list, total, page, auths} = state.roles;
+  const {list, total, page, auths,checkedKeys} = state.roles;
   return {
     loading: state.loading.models.roles,
     list,
     total,
     page,
-    auths
+    auths,
+    checkedKeys
   }
 }
 
