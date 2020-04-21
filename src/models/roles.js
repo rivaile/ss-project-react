@@ -17,6 +17,7 @@ export default {
 
     saveAuths(state, {payload: {authTree}}) {
       const checkedKeys = [];
+
       const treeFun = (auths) => {
         return auths.map(it => {
           let treeObj = {};
@@ -43,8 +44,12 @@ export default {
 
       const auths = treeFun.call(this, authTree);
       console.dir(checkedKeys);
-      return {...state, auths,checkedKeys};
-    }
+      return {...state, auths, checkedKeys};
+    },
+
+    setCheckedKeys(state, {payload: {checkedKeys}}) {
+      return {...state, checkedKeys};
+    },
   },
 
   effects: {
@@ -59,6 +64,21 @@ export default {
         }
       });
     },
+
+    * create({payload: values}, {call, put}) {
+      yield call(rolesService.create, values);
+      yield put({
+        type: 'fetch'
+      });
+    },
+
+    * patch({payload: {id, values}}, {call, put}) {
+      yield call(rolesService.patch, id, values);
+      yield put({
+        type: 'fetch'
+      });
+    },
+
 
     * auth({payload: values}, {call, put}) {
       const respone = yield call(rolesService.auths, values);

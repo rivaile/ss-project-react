@@ -1,55 +1,16 @@
 import React, {useState} from 'react';
 import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tree, TreeSelect} from 'antd';
 import {connect} from 'dva';
-import UserModal from "@/pages/admin/user/components/UserModal";
+import RoleModal from "@/pages/admin/role/components/RoleModal";
 
 const {Option} = Select;
 const {TreeNode, DirectoryTree} = Tree;
 
-const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths: auths,checkedKeys}) => {
+const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths: auths, checkedKeys}) => {
+
+  // const [checkedKeys, setCheckedKeys] = useState([]);
 
   const [form] = Form.useForm();
-
-  const treeData = [
-
-    {
-      title: 'parent 1',
-      key: '0-0',
-      children: [
-        {
-          title: 'parent 1-0',
-          key: '0-0-0',
-          children: [
-            {
-              title: 'leaf1',
-              key: '0-0-0-0',
-              checked: true,
-              // disableCheckbox: true,
-            },
-            {
-              title: 'leaf2',
-              key: '0-0-0-1',
-              children: [{
-                title: 'leaf100',
-                key: '0-0-0-0-0',
-              }]
-            },
-          ],
-        },
-        {
-          title: 'parent 1-1',
-          key: '0-0-1',
-          children: [
-            {
-              title: 'ss',
-              key: '0-0-1-0',
-            },
-          ],
-        },
-      ],
-    },
-  ];
-
 
   const columns = [
     {
@@ -91,15 +52,14 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
       dataIndex: 'operateTime',
       key: 'operateTime',
     },
-
     {
       title: '操作',
       key: 'action',
       render: (text, record) => (
         <span>
-          <UserModal record={record} onCreate={editHandler.bind(null, record.id)}>
+          <RoleModal record={record} onCreate={editHandler.bind(null, record.id)}>
             <a style={{marginRight: 16}}>编辑</a>
-          </UserModal>
+          </RoleModal>
           <Popconfirm title="确定删除该用户嘛?"
                       onConfirm={deleteHandler.bind(null, record.id)}>
             <a>删除</a>
@@ -157,7 +117,7 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
 
   function editHandler(id, values) {
     dispatch({
-      type: 'users/patch',
+      type: 'roles/patch',
       payload: {id, values},
     });
   }
@@ -175,18 +135,21 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
     },
   };
 
-
   const onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
   };
 
   const onCheck = (checkedKeys, info) => {
     console.log('onCheck', checkedKeys, info);
+    dispatch({
+      type: 'roles/setCheckedKeys',
+      payload: {
+        checkedKeys
+      },
+    });
   };
 
-
   return (
-
     <div>
       <Form
         className="ant-advanced-search-form"
@@ -285,22 +248,19 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
       </Form>
 
       <div>
-        <UserModal
+        <RoleModal
           record={{}}
-          onCreate={createHandler}>
+          onCreate={values => {
+            dispatch({
+              type: "roles/create",
+              payload: values
+            });
+          }}>
           <Button
             type="primary">
             新增
           </Button>
-        </UserModal>
-
-        <Button type="primary" loading={loading}
-                style={{
-                  marginLeft: 8,
-                }}>
-          Reload
-        </Button>
-
+        </RoleModal>
       </div>
 
       <Row gutter={24}>
@@ -338,26 +298,27 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
         </Col>
 
         <Col span={6}>
+          <Button onClick={() => {
+            const authKeys = checkedKeys.filter(it => it.startsWith("a-")).map(it => it.substr(it.indexOf("-") + 1));
+            console.dir(authKeys);
+          }}>
+            保存
+          </Button>
 
           <Tree
             checkable
-            // defaultExpandedKeys={['0-0-0', '0-0-1']}
-            // defaultExpandedKeys={['0-0']}
-            defaultCheckedKeys={checkedKeys}
+            checkedKeys={checkedKeys}
             onCheck={onCheck}
-            treeData={auths}
-          />
+            treeData={auths}/>
 
         </Col>
       </Row>
-
-
     </div>
   )
 };
 
 function mapStateToProps(state) {
-  const {list, total, page, auths,checkedKeys} = state.roles;
+  const {list, total, page, auths, checkedKeys} = state.roles;
   return {
     loading: state.loading.models.roles,
     list,

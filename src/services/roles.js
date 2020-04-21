@@ -8,14 +8,14 @@ export function fetch(params) {
 }
 
 export async function create(params) {
-  return request('/api/system/user', {
+  return request('/api/system/role', {
     method: 'post',
     data: params
   });
 }
 
 export async function patch(id, values) {
-  return request(`/api/system/user/${id}`, {
+  return request(`/api/system/role/${id}`, {
     method: 'put',
     data: values
   });
