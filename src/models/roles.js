@@ -79,6 +79,13 @@ export default {
       });
     },
 
+    * changeRoleAuths({payload: {id, values}}, {call, put}) {
+      yield call(rolesService.changeRoleAuths, id, values);
+      yield put({
+        type: 'fetch'
+      });
+    },
+
 
     * auth({payload: values}, {call, put}) {
       const respone = yield call(rolesService.auths, values);

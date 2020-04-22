@@ -5,11 +5,15 @@ export default {
   state: {
     list: [],
     total: null,
-    page: null
+    page: null,
+    deptTree: []
   },
   reducers: {
     save(state, {payload: {data: list, total, page}}) {
       return {...state, list, total, page};
+    },
+    saveDept(state, {payload: {data: deptTree}}) {
+      return {...state, deptTree};
     }
   },
   effects: {
@@ -45,14 +49,24 @@ export default {
       yield call(usersService.remove, id);
       yield put({type: 'reload'});
     },
+
+    * fetchDept(action, {call, put}) {
+      const respone = yield call(usersService.fetchDept);
+      yield put({
+        type: 'saveDept',
+        payload: {
+          data: respone.data,
+        }
+      });
+    },
   },
 
   subscriptions: {
     setup({dispatch, history}) {
-      console.log('setup');
       return history.listen(({pathname, query}) => {
         if (pathname === '/admin1/users') {
           dispatch({type: 'fetch', payload: query});
+          dispatch({type: 'fetchDept'});
         }
       });
     }

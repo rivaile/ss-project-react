@@ -22,8 +22,15 @@ export async function patch(id, values) {
 }
 
 export async function remove(userId) {
-  return request(`/api/system/user/${userId}`, {
+  return request(`/api/system/role/${userId}`, {
     method: 'delete'
+  });
+}
+
+export async function changeRoleAuths(id, params) {
+  return request(`/api/system/role/${id}/auth`, {
+    method: 'post',
+    params: params
   });
 }
 
@@ -31,7 +38,7 @@ export async function getDept() {
   return request('/api/system/dept');
 }
 
-
 export async function auths(roleId) {
   return request(`/api/system/role/${roleId}`);
 }
+

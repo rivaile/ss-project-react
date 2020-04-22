@@ -1,25 +1,65 @@
 import React, {useState} from 'react';
-import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tag, TreeSelect} from 'antd';
+import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tag, TreeSelect, Tree} from 'antd';
 import {connect} from 'dva';
 import UserModal from "@/pages/admin/user/components/UserModal";
+import DeptModal from "@/pages/admin/user/components/DeptModal";
 
 const {Option} = Select;
 
-const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
+const Users = ({dispatch, list: dataSource, loading, total, page: current, deptTree}) => {
 
   const [form] = Form.useForm();
-  const [visible, setVisible] = useState(false);
+
+
+  const treeData = [
+    {
+      title: '0-0',
+      key: '0-0',
+      children: [
+        {
+          title: '0-0-0',
+          key: '0-0-0',
+          children: [
+            {title: '0-0-0-0', key: '0-0-0-0'},
+            {title: '0-0-0-1', key: '0-0-0-1'},
+            {title: '0-0-0-2', key: '0-0-0-2'},
+          ],
+        },
+        {
+          title: '0-0-1',
+          key: '0-0-1',
+          children: [
+            {title: '0-0-1-0', key: '0-0-1-0'},
+            {title: '0-0-1-1', key: '0-0-1-1'},
+            {title: '0-0-1-2', key: '0-0-1-2'},
+          ],
+        },
+        {
+          title: '0-0-2',
+          key: '0-0-2',
+        },
+      ],
+    },
+    {
+      title: '0-1',
+      key: '0-1',
+      children: [
+        {title: '0-1-0-0', key: '0-1-0-0'},
+        {title: '0-1-0-1', key: '0-1-0-1'},
+        {title: '0-1-0-2', key: '0-1-0-2'},
+      ],
+    },
+    {
+      title: '0-2',
+      key: '0-2',
+    },
+  ];
 
   const columns = [
     {
-      title: '用户ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
       title: '用户名',
       dataIndex: 'username',
-      key: 'telephone',
+      key: 'username',
     },
     {
       title: '电话',
@@ -137,7 +177,6 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
   return (
     <div>
       <Form
-        className="ant-advanced-search-form"
         {...layout}
         form={form}
         name="basic"
@@ -167,7 +206,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
             </Form.Item>
           </Col>
         </Row>
-        <Row>
+        <Row gutter={24}>
           <Col span={8}>
             <Form.Item
               label="部门"
@@ -208,11 +247,9 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
               </Select>
             </Form.Item>
           </Col>
-        </Row>
 
-        <Row>
           <Col
-            span={24}
+            span={8}
             style={{
               textAlign: 'right',
             }}>
@@ -223,63 +260,121 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current}) => {
               }}
               onClick={() => {
                 form.resetFields();
-              }}
-            >
+              }}>
               重置
             </Button>
           </Col>
         </Row>
       </Form>
 
-      <div>
-        <UserModal
-          record={{}}
-          onCreate={createHandler}>
-          <Button
-            type="primary">
-            新增
-          </Button>
-        </UserModal>
 
-        <Button type="primary" loading={loading}
-                style={{
-                  marginLeft: 8,
-                }}>
-          Reload
-        </Button>
+      <Row gutter={24}>
 
-      </div>
-      <Table
-        rowSelection={{
-          type: "checkbox",
-          ...rowSelection,
-        }}
-        rowKey={record => record.id}
-        loading={loading}
-        columns={columns}
-        dataSource={dataSource}
-        pagination={false}
-      />
+        <Col span={6}>
 
-      <Pagination
-        className="ant-table-pagination"
-        total={total}
-        current={current}
-        pageSize={10}
-        onChange={pageChangeHandler}
-      />
+          <span>部门列表</span>
+
+          <div>
+            {/*<ModuleModal*/}
+            {/*  record={{}}*/}
+            {/*  moduleTree={treeData}*/}
+            {/*  onCreate={createHandler}>*/}
+            {/*  <Button*/}
+            {/*    type="primary" size="default">*/}
+            {/*    新增*/}
+            {/*  </Button>*/}
+            {/*</ModuleModal>*/}
+
+            <DeptModal record={{}} onCreate={() => {
+            }}>
+              <a style={{marginRight: 16}}>编辑</a>
+            </DeptModal>
+
+
+            {/*  <ModuleModal*/}
+            {/*    record={nodeInfo}*/}
+            {/*    moduleTree={treeData}*/}
+            {/*    onCreate={updateHandler}*/}
+            {/*  >*/}
+            {/*    <Button type="primary" size="default"*/}
+            {/*            style={{*/}
+            {/*              marginLeft: 8,*/}
+            {/*            }}>*/}
+            {/*      修改*/}
+            {/*    </Button>*/}
+            {/*  </ModuleModal>*/}
+
+            {/*  <Button onClick={showDeleteConfirm} type="dashed">*/}
+            {/*    删除*/}
+            {/*  </Button>*/}
+
+          </div>
+
+          <Tree
+            // defaultExpandedKeys={['0-0-0', '0-0-1']}
+            defaultExpandedKeys={['0-0']}
+            defaultCheckedKeys={['0-0-1']}
+            // onCheck={onCheck}
+            // onSelect={onSelect}
+            treeData={deptTree}
+          />
+        </Col>
+
+        <Col span={18}>
+          <div style={{
+            marginBottom: 8,
+          }}>
+            <UserModal
+              record={{}}
+              onCreate={createHandler}>
+              <Button
+                type="primary">
+                新增
+              </Button>
+            </UserModal>
+
+            <Button loading={loading}
+                    style={{
+                      marginLeft: 8,
+                    }}>
+              Reload
+            </Button>
+          </div>
+          <Table
+            rowSelection={{
+              type: "checkbox",
+              ...rowSelection,
+            }}
+            rowKey={record => record.id}
+            loading={loading}
+            columns={columns}
+            dataSource={dataSource}
+            pagination={false}
+          />
+
+          <Pagination
+            className="ant-table-pagination"
+            total={total}
+            current={current}
+            pageSize={10}
+            onChange={pageChangeHandler}
+          />
+
+        </Col>
+      </Row>
 
     </div>
   )
 };
 
 function mapStateToProps(state) {
-  const {list, total, page} = state.users;
+  const {list, total, page, deptTree} = state.users;
   return {
     loading: state.loading.models.users,
     list,
     total,
-    page
+    page,
+    deptTree
   }
 }
 

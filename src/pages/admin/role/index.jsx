@@ -8,7 +8,7 @@ const {TreeNode, DirectoryTree} = Tree;
 
 const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths: auths, checkedKeys}) => {
 
-  // const [checkedKeys, setCheckedKeys] = useState([]);
+  const [roleId, setRoleId] = useState();
 
   const [form] = Form.useForm();
 
@@ -280,6 +280,7 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
             onRow={record => {
               return {
                 onClick: event => {
+                  setRoleId(record.id);
                   authHandler(record.id);
                 },
               };
@@ -301,6 +302,19 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
           <Button onClick={() => {
             const authKeys = checkedKeys.filter(it => it.startsWith("a-")).map(it => it.substr(it.indexOf("-") + 1));
             console.dir(authKeys);
+            const authIds = authKeys.join(',');
+            console.dir(authIds);
+
+            dispatch({
+              type: 'roles/changeRoleAuths',
+              payload: {
+                id: roleId,
+                values: {
+                  authIds:authIds
+                }
+              },
+            });
+
           }}>
             保存
           </Button>

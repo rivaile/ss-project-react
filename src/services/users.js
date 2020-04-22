@@ -27,6 +27,6 @@ export async function remove(userId) {
   });
 }
 
-export async function getDept() {
+export async function fetchDept() {
   return request('/api/system/dept');
 }
