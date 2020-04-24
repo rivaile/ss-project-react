@@ -12,7 +12,23 @@ export default {
     save(state, {payload: {data: list, total, page}}) {
       return {...state, list, total, page};
     },
-    saveDept(state, {payload: {data: deptTree}}) {
+
+    saveDept(state, {payload: {data: depts}}) {
+
+      const deptTreeFun = (depts) => {
+        return depts.map(it => {
+          it.title = it.name;
+          it.key = it.id;
+          it.value = it.id;
+          console.dir(it.children.length);
+          if (it.children.length > 0) {
+            deptTreeFun(it.children);
+          }
+          return it;
+        });
+      };
+
+      const deptTree = deptTreeFun.call(this, depts);
       return {...state, deptTree};
     }
   },
@@ -58,6 +74,21 @@ export default {
           data: respone.data,
         }
       });
+    },
+
+    * createDept({payload: values}, {call, put}) {
+      yield call(usersService.createDept, values);
+      yield put({type: 'fetchDept'});
+    },
+
+    * patchDept({payload: {id, values}}, {call, put}) {
+      yield call(usersService.patchDept, id, values);
+      yield put({type: 'fetchDept'});
+    },
+
+    * removeDept({payload: id}, {call, put}) {
+      yield call(usersService.removeDept, id);
+      yield put({type: 'fetchDept'});
     },
   },
 

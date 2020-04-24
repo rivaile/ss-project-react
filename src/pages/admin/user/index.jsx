@@ -1,59 +1,24 @@
 import React, {useState} from 'react';
-import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tag, TreeSelect, Tree} from 'antd';
+import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tag, TreeSelect, Tree, Modal} from 'antd';
 import {connect} from 'dva';
 import UserModal from "@/pages/admin/user/components/UserModal";
 import DeptModal from "@/pages/admin/user/components/DeptModal";
 
+import {ExclamationCircleOutlined} from '@ant-design/icons';
+
 const {Option} = Select;
+const {confirm} = Modal;
+
 
 const Users = ({dispatch, list: dataSource, loading, total, page: current, deptTree}) => {
 
   const [form] = Form.useForm();
 
+  const [deptIds, setDeptIds] = useState([]);
+  const [dept, setDept] = useState({});
+  const [action, setAction] = useState('create');
+  const [visible, setVisible] = useState(false);
 
-  const treeData = [
-    {
-      title: '0-0',
-      key: '0-0',
-      children: [
-        {
-          title: '0-0-0',
-          key: '0-0-0',
-          children: [
-            {title: '0-0-0-0', key: '0-0-0-0'},
-            {title: '0-0-0-1', key: '0-0-0-1'},
-            {title: '0-0-0-2', key: '0-0-0-2'},
-          ],
-        },
-        {
-          title: '0-0-1',
-          key: '0-0-1',
-          children: [
-            {title: '0-0-1-0', key: '0-0-1-0'},
-            {title: '0-0-1-1', key: '0-0-1-1'},
-            {title: '0-0-1-2', key: '0-0-1-2'},
-          ],
-        },
-        {
-          title: '0-0-2',
-          key: '0-0-2',
-        },
-      ],
-    },
-    {
-      title: '0-1',
-      key: '0-1',
-      children: [
-        {title: '0-1-0-0', key: '0-1-0-0'},
-        {title: '0-1-0-1', key: '0-1-0-1'},
-        {title: '0-1-0-2', key: '0-1-0-2'},
-      ],
-    },
-    {
-      title: '0-2',
-      key: '0-2',
-    },
-  ];
 
   const columns = [
     {
@@ -174,6 +139,51 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
     },
   };
 
+  const onSelect = (selectedKeys, info) => {
+    console.log('selected', selectedKeys, info);
+    setDeptIds(selectedKeys);
+    console.dir(dept);
+
+    if (info.selected == true) {
+      setDept({
+        id: info.node.id,
+        name: info.node.name,
+        parentId: info.node.parentId,
+        seq: info.node.seq,
+        remark: info.node.remark,
+      });
+    } else {
+      setDept({});
+    }
+    console.dir(dept);
+  };
+
+  function showDeleteConfirm() {
+    if (deptIds.length == 0) {
+      return;
+    }
+    console.log(deptIds[0])
+    confirm({
+      title: '确定要删除该部门嘛?',
+      icon: <ExclamationCircleOutlined/>,
+      content: 'Some descriptions',
+      okText: '确定删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        dispatch({
+          type: "users/removeDept",
+          payload: deptIds[0]
+        });
+        console.log('OK');
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
+
+
   return (
     <div>
       <Form
@@ -271,42 +281,56 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
       <Row gutter={24}>
 
         <Col span={6}>
-
           <span>部门列表</span>
-
           <div>
-            {/*<ModuleModal*/}
-            {/*  record={{}}*/}
-            {/*  moduleTree={treeData}*/}
-            {/*  onCreate={createHandler}>*/}
-            {/*  <Button*/}
-            {/*    type="primary" size="default">*/}
-            {/*    新增*/}
-            {/*  </Button>*/}
-            {/*</ModuleModal>*/}
 
-            <DeptModal record={{}} onCreate={() => {
-            }}>
-              <a style={{marginRight: 16}}>编辑</a>
+            <DeptModal
+              visible={visible}
+              deptTree={deptTree}
+              record={dept}
+              onCancel={() => {
+                setVisible(false);
+              }}
+              onCreate={(values) => {
+                console.dir(values);
+                if (action == 'create') {
+                  dispatch({
+                    type: "users/createDept",
+                    payload: values
+                  });
+                } else {
+                  dispatch({
+                    type: "users/patchDept",
+                    payload: {
+                      id: values.id,
+                      values: values,
+                    }
+                  });
+                }
+              }}>
             </DeptModal>
 
+            <Button size="default" style={{marginRight: 8}} onClick={() => {
+              setVisible(true);
+              setAction('create');
+            }}>
+              新增
+            </Button>
+            {dept && Object.keys(dept).length ? (
+              <span>
+                <Button size="default" style={{marginLeft: 8}} onClick={() => {
+                  setVisible(true);
+                  setAction('update');
+                }}>
+              编辑
+              </Button>
 
-            {/*  <ModuleModal*/}
-            {/*    record={nodeInfo}*/}
-            {/*    moduleTree={treeData}*/}
-            {/*    onCreate={updateHandler}*/}
-            {/*  >*/}
-            {/*    <Button type="primary" size="default"*/}
-            {/*            style={{*/}
-            {/*              marginLeft: 8,*/}
-            {/*            }}>*/}
-            {/*      修改*/}
-            {/*    </Button>*/}
-            {/*  </ModuleModal>*/}
+              <Button onClick={showDeleteConfirm} type="dashed">
+                删除
+              </Button>
 
-            {/*  <Button onClick={showDeleteConfirm} type="dashed">*/}
-            {/*    删除*/}
-            {/*  </Button>*/}
+              </span>
+            ) : null}
 
           </div>
 
@@ -315,7 +339,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
             defaultExpandedKeys={['0-0']}
             defaultCheckedKeys={['0-0-1']}
             // onCheck={onCheck}
-            // onSelect={onSelect}
+            onSelect={onSelect}
             treeData={deptTree}
           />
         </Col>

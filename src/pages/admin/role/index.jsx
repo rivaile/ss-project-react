@@ -285,7 +285,6 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
                 },
               };
             }}
-
           />
 
           <Pagination
@@ -310,7 +309,7 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
               payload: {
                 id: roleId,
                 values: {
-                  authIds:authIds
+                  authIds: authIds
                 }
               },
             });

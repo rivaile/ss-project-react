@@ -30,3 +30,26 @@ export async function remove(userId) {
 export async function fetchDept() {
   return request('/api/system/dept');
 }
+
+export async function createDept(params) {
+  return request('/api/system/dept', {
+    method: 'post',
+    data: params
+  });
+}
+
+export async function patchDept(id, values) {
+  return request('/api/system/dept', {
+    method: 'put',
+    data: values
+  });
+}
+
+export async function removeDept(id) {
+  return request(`/api/system/dept/${id}`, {
+    method: 'delete',
+  });
+}
+
+
+
