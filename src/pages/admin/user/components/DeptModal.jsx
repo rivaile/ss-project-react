@@ -1,8 +1,5 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Col, Form, Input, Modal, Row, Select, TreeSelect} from 'antd';
-
-const {Option} = Select;
-
 
 const DeptModal = ({onCreate, onCancel, record, deptTree, visible}) => {
 
@@ -18,7 +15,6 @@ const DeptModal = ({onCreate, onCancel, record, deptTree, visible}) => {
     wrapperCol: {span: 20},
   };
 
-
   return (
     <Modal
       visible={visible}
@@ -26,7 +22,6 @@ const DeptModal = ({onCreate, onCancel, record, deptTree, visible}) => {
       okText="确认"
       cancelText="取消"
       onCancel={() => {
-        form.resetFields();
         onCancel();
       }}
       onOk={() => {

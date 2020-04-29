@@ -39,8 +39,6 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
       dataIndex: 'remark',
       key: 'remark',
     },
-
-
     {
       title: '操作者',
       dataIndex: 'operator',

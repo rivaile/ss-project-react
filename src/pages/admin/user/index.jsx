@@ -80,6 +80,14 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
     },
   ];
 
+  const layout = {
+    labelCol: {
+      span: 8,
+    },
+    wrapperCol: {
+      span: 16,
+    },
+  };
   const deleteHandler = (id) => {
     dispatch({
       type: 'users/remove',
@@ -103,17 +111,8 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
     })
   }
 
-  const layout = {
-    labelCol: {
-      span: 8,
-    },
-    wrapperCol: {
-      span: 16,
-    },
-  };
 
   const onFinish = values => {
-    console.log('Success:', values);
     dispatch({
       type: "users/fetch",
       payload: {
@@ -142,8 +141,6 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
   const onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
     setDeptIds(selectedKeys);
-    console.dir(dept);
-
     if (info.selected == true) {
       setDept({
         id: info.node.id,
@@ -155,7 +152,6 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
     } else {
       setDept({});
     }
-    console.dir(dept);
   };
 
   function showDeleteConfirm() {
@@ -284,7 +280,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
           <span>部门列表</span>
           <div>
 
-            <DeptModal
+            {visible && <DeptModal
               visible={visible}
               deptTree={deptTree}
               record={dept}
@@ -292,7 +288,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
                 setVisible(false);
               }}
               onCreate={(values) => {
-                console.dir(values);
+                setVisible(false);
                 if (action == 'create') {
                   dispatch({
                     type: "users/createDept",
@@ -308,10 +304,11 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
                   });
                 }
               }}>
-            </DeptModal>
+            </DeptModal>}
 
             <Button size="default" style={{marginRight: 8}} onClick={() => {
               setVisible(true);
+              setDept({});
               setAction('create');
             }}>
               新增
