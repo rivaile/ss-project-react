@@ -1,10 +1,28 @@
 import React, {useState} from 'react';
-import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tag, TreeSelect, Tree, Modal} from 'antd';
+
+
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Pagination,
+  Popconfirm,
+  Row,
+  Select,
+  Table,
+  Tag,
+  TreeSelect,
+  Tree,
+  Modal,
+  Menu,
+  Dropdown,
+  notification
+} from 'antd';
 import {connect} from 'dva';
 import UserModal from "@/pages/admin/user/components/UserModal";
 import DeptModal from "@/pages/admin/user/components/DeptModal";
-
-import {ExclamationCircleOutlined} from '@ant-design/icons';
+import {ExclamationCircleOutlined, DownOutlined} from '@ant-design/icons';
 
 const {Option} = Select;
 const {confirm} = Modal;
@@ -153,16 +171,20 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
       setDept({});
     }
   };
-
+  
   function showDeleteConfirm() {
     if (deptIds.length == 0) {
+      notification['error']({
+        message: '错误警告!',
+        description: '请选择要删除的部门.',
+      });
       return;
     }
     console.log(deptIds[0])
     confirm({
       title: '确定要删除该部门嘛?',
       icon: <ExclamationCircleOutlined/>,
-      content: 'Some descriptions',
+      content: '',
       okText: '确定删除',
       okType: 'danger',
       cancelText: '取消',
@@ -179,6 +201,39 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
     });
   }
 
+  function handleMenuClick(e) {
+    switch (e.key) {
+      case 'create':
+        setVisible(true);
+        setDept({});
+        setAction('create');
+        break;
+      case 'update':
+
+        if (deptIds.length == 0) {
+          notification['error']({
+            message: '错误警告!',
+            description: '请选择要编辑的部门.',
+          });
+          return;
+        }
+
+        setVisible(true);
+        setAction('update');
+        break;
+      case 'delete':
+        showDeleteConfirm();
+        break;
+    }
+  }
+
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="create">新增</Menu.Item>
+      <Menu.Item key="update">编辑</Menu.Item>
+      <Menu.Item key="delete">删除</Menu.Item>
+    </Menu>
+  );
 
   return (
     <div>
@@ -277,57 +332,49 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
       <Row gutter={24}>
 
         <Col span={6}>
-          <span>部门列表</span>
-          <div>
 
-            {visible && <DeptModal
-              visible={visible}
-              deptTree={deptTree}
-              record={dept}
-              onCancel={() => {
-                setVisible(false);
-              }}
-              onCreate={(values) => {
-                setVisible(false);
-                if (action == 'create') {
-                  dispatch({
-                    type: "users/createDept",
-                    payload: values
-                  });
-                } else {
-                  dispatch({
-                    type: "users/patchDept",
-                    payload: {
-                      id: values.id,
-                      values: values,
-                    }
-                  });
-                }
-              }}>
-            </DeptModal>}
-
-            <Button size="default" style={{marginRight: 8}} onClick={() => {
-              setVisible(true);
-              setDept({});
-              setAction('create');
+          {visible && <DeptModal
+            visible={visible}
+            deptTree={deptTree}
+            record={dept}
+            onCancel={() => {
+              setVisible(false);
+            }}
+            onCreate={(values) => {
+              setVisible(false);
+              if (action == 'create') {
+                dispatch({
+                  type: "users/createDept",
+                  payload: values
+                });
+              } else {
+                dispatch({
+                  type: "users/patchDept",
+                  payload: {
+                    id: values.id,
+                    values: values,
+                  }
+                });
+              }
             }}>
-              新增
-            </Button>
-            {dept && Object.keys(dept).length ? (
-              <span>
-                <Button size="default" style={{marginLeft: 8}} onClick={() => {
-                  setVisible(true);
-                  setAction('update');
-                }}>
-              编辑
-              </Button>
+          </DeptModal>}
 
-              <Button onClick={showDeleteConfirm} type="dashed">
-                删除
-              </Button>
+          <Row>
+            <Col span={12}></Col>
+            <Col span={12}>
 
-              </span>
-            ) : null}
+            </Col>
+          </Row>
+
+          <div style={{height: "34px", position: "relative", lineHeight: "34px", marginBottom: "6px"}}>
+            <span style={{}}>部门列表</span>
+            <span style={{position: "absolute", right: "0px"}}>
+            <Dropdown overlay={menu}>
+              <Button loading={loading}>
+                操作 <DownOutlined/>
+              </Button>
+            </Dropdown>
+          </span>
 
           </div>
 
@@ -383,9 +430,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
 
         </Col>
       </Row>
-
-    </div>
-  )
+    </div>)
 };
 
 function mapStateToProps(state) {

@@ -298,10 +298,7 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
         <Col span={6}>
           <Button onClick={() => {
             const authKeys = checkedKeys.filter(it => it.startsWith("a-")).map(it => it.substr(it.indexOf("-") + 1));
-            console.dir(authKeys);
             const authIds = authKeys.join(',');
-            console.dir(authIds);
-
             dispatch({
               type: 'roles/changeRoleAuths',
               payload: {
