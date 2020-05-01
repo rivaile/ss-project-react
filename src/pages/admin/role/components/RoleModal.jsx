@@ -4,7 +4,7 @@ import {Col, Form, Input, Modal, Row, Select} from 'antd';
 const {Option} = Select;
 
 
-const RoleModal = ({onCreate, record, children}) => {
+const RoleModal = ({onCreate, record, children, action}) => {
   const [form] = Form.useForm();
 
   const [visible, setVisible] = useState(false);
@@ -34,7 +34,7 @@ const RoleModal = ({onCreate, record, children}) => {
        <span onClick={showModelHandler}>{children}</span>
       <Modal
         visible={visible}
-        title="创建角色"
+        title={action == "create" ? "创建角色" : "编辑角色"}
         okText="确认"
         cancelText="取消"
         onCancel={hideModelHandler}

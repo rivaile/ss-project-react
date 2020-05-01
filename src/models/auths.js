@@ -60,19 +60,23 @@ export default {
       });
     },
 
-
-    * createAuth({payload: values}, {call, put}) {
-      const response = yield call(authsService.createAuth, values);
+    * createAuth({payload: {data: data, authModule: authModule}}, {call, put}) {
+      const response = yield call(authsService.createAuth, data);
       yield put({
-        type: 'fetchAuth'
+        type: 'fetchAuth',
+        payload: {
+          id: authModule
+        }
       });
     },
 
-
-    * patchAuth({payload: {id: id, data: data}}, {call, put}) {
+    * patchAuth({payload: {id: id, data: data, authModule: authModule}}, {call, put}) {
       const response = yield call(authsService.patchAuth, id, data);
       yield put({
-        type: 'fetchAuth'
+        type: 'fetchAuth',
+        payload: {
+          id: authModule
+        }
       });
     },
 

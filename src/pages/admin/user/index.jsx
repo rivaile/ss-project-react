@@ -64,7 +64,6 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
       dataIndex: 'status',
       key: 'status',
       render: status => {
-
         switch (status) {
           case 0:
             return <Tag color="default">冻结</Tag>;
@@ -86,7 +85,9 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
       key: 'action',
       render: (text, record) => (
         <span>
-          <UserModal record={record} onCreate={editHandler.bind(null, record.id)}>
+          <UserModal deptTree={deptTree}
+                     record={record}
+                     onCreate={editHandler.bind(null, record.id)}>
             <a style={{marginRight: 16}}>编辑</a>
           </UserModal>
           <Popconfirm title="确定删除该用户嘛?"
@@ -129,7 +130,6 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
     })
   }
 
-
   const onFinish = values => {
     dispatch({
       type: "users/fetch",
@@ -170,8 +170,12 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
     } else {
       setDept({});
     }
+
+    onFinish({
+      deptId: selectedKeys
+    })
   };
-  
+
   function showDeleteConfirm() {
     if (deptIds.length == 0) {
       notification['error']({
@@ -272,25 +276,9 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
             <Form.Item
               label="部门"
               name="deptId">
-
               <TreeSelect
                 placeholder="请选择部门"
-                treeData={[
-                  {
-                    title: '技术部',
-                    value: '0',
-                    children: [
-                      {
-                        title: 'android',
-                        value: '1',
-                      },
-                      {
-                        title: 'java',
-                        value: '2',
-                      },
-                    ],
-                  },
-                ]}
+                treeData={deptTree}
               />
             </Form.Item>
           </Col>
@@ -334,6 +322,7 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
         <Col span={6}>
 
           {visible && <DeptModal
+            action={action}
             visible={visible}
             deptTree={deptTree}
             record={dept}
@@ -366,9 +355,9 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
             </Col>
           </Row>
 
-          <div style={{height: "34px", position: "relative", lineHeight: "34px", marginBottom: "6px"}}>
+          <div style={{height: "32px", position: "relative", lineHeight: "32px", marginBottom: "8px"}}>
             <span style={{}}>部门列表</span>
-            <span style={{position: "absolute", right: "0px"}}>
+            <span style={{position: "absolute", right: "0px", top: "0px"}}>
             <Dropdown overlay={menu}>
               <Button loading={loading}>
                 操作 <DownOutlined/>
@@ -394,20 +383,15 @@ const Users = ({dispatch, list: dataSource, loading, total, page: current, deptT
           }}>
             <UserModal
               record={{}}
+              deptTree={deptTree}
               onCreate={createHandler}>
               <Button
                 type="primary">
                 新增
               </Button>
             </UserModal>
-
-            <Button loading={loading}
-                    style={{
-                      marginLeft: 8,
-                    }}>
-              Reload
-            </Button>
           </div>
+
           <Table
             rowSelection={{
               type: "checkbox",

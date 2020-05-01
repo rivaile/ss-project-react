@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
-import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tree, TreeSelect} from 'antd';
+import {Button, Col, Form, Input, Pagination, Popconfirm, Row, Select, Table, Tree, TreeSelect, Tag, Spin} from 'antd';
 import {connect} from 'dva';
 import RoleModal from "@/pages/admin/role/components/RoleModal";
 
 const {Option} = Select;
 const {TreeNode, DirectoryTree} = Tree;
+
+import styles from './index.css';
 
 const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths: auths, checkedKeys}) => {
 
@@ -13,11 +15,6 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
   const [form] = Form.useForm();
 
   const columns = [
-    {
-      title: '角色ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
     {
       title: '角色名称',
       dataIndex: 'name',
@@ -32,6 +29,22 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
       title: '角色状态',
       dataIndex: 'status',
       key: 'status',
+      render: status => {
+        switch (status) {
+          case 0:
+            return <Tag color="default">冻结</Tag>;
+            break;
+          case 1:
+            return <Tag color="success">正常</Tag>;
+            break;
+          case 2:
+            return <Tag color="error">删除</Tag>;
+            break;
+          default:
+            return <Tag color="default">其他</Tag>;
+            break;
+        }
+      }
     },
 
     {
@@ -55,7 +68,7 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
       key: 'action',
       render: (text, record) => (
         <span>
-          <RoleModal record={record} onCreate={editHandler.bind(null, record.id)}>
+          <RoleModal action="update" record={record} onCreate={editHandler.bind(null, record.id)}>
             <a style={{marginRight: 16}}>编辑</a>
           </RoleModal>
           <Popconfirm title="确定删除该用户嘛?"
@@ -127,12 +140,6 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
     });
   }
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-  };
-
   const onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
   };
@@ -149,127 +156,27 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
 
   return (
     <div>
-      <Form
-        className="ant-advanced-search-form"
-        {...layout}
-        form={form}
-        name="basic"
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}>
-
-        <Row gutter={24}>
-          <Col span={8}>
-            <Form.Item
-              label="用户名"
-              name="username">
-              <Input placeholder="请输入用户名"/>
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item
-              label="电话号码"
-              name="telephone">
-              <Input placeholder="请输入电话号码"/>
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item
-              label="邮箱"
-              name="mail">
-              <Input placeholder="请输入邮箱"/>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={8}>
-            <Form.Item
-              label="部门"
-              name="deptId">
-
-              <TreeSelect
-                placeholder="请选择部门"
-                treeData={[
-                  {
-                    title: '技术部',
-                    value: '0',
-                    children: [
-                      {
-                        title: 'android',
-                        value: '1',
-                      },
-                      {
-                        title: 'java',
-                        value: '2',
-                      },
-                    ],
-                  },
-                ]}
-              />
-            </Form.Item>
-          </Col>
-
-          <Col span={8}>
-            <Form.Item
-              label="状态"
-              name="status">
-              <Select
-                placeholder="请选择状态"
-                allowClear>
-                <Option value="0">冻结</Option>
-                <Option value="1">正常</Option>
-                <Option value="2">删除</Option>
-
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col
-            span={24}
-            style={{
-              textAlign: 'right',
-            }}>
-            <Button type="primary" htmlType="submit">查询</Button>
-            <Button
-              style={{
-                marginLeft: 8,
-              }}
-              onClick={() => {
-                form.resetFields();
-              }}
-            >
-              重置
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-
-      <div>
-        <RoleModal
-          record={{}}
-          onCreate={values => {
-            dispatch({
-              type: "roles/create",
-              payload: values
-            });
-          }}>
-          <Button
-            type="primary">
-            新增
-          </Button>
-        </RoleModal>
-      </div>
-
+      {/*<Spin className={styles.loading}/>*/}
       <Row gutter={24}>
-
         <Col span={18}>
+          <RoleModal
+            action="create"
+            record={{}}
+            onCreate={values => {
+              dispatch({
+                type: "roles/create",
+                payload: values
+              });
+            }}>
+            <Button
+              type="primary"
+              style={{marginBottom: "8px"}}
+            >
+              新增
+            </Button>
+          </RoleModal>
 
           <Table
-            rowSelection={{
-              type: "checkbox",
-              ...rowSelection,
-            }}
             rowKey={record => record.id}
             loading={loading}
             columns={columns}
@@ -296,20 +203,23 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
         </Col>
 
         <Col span={6}>
-          <Button onClick={() => {
-            const authKeys = checkedKeys.filter(it => it.startsWith("a-")).map(it => it.substr(it.indexOf("-") + 1));
-            const authIds = authKeys.join(',');
-            dispatch({
-              type: 'roles/changeRoleAuths',
-              payload: {
-                id: roleId,
-                values: {
-                  authIds: authIds
-                }
-              },
-            });
-
-          }}>
+          <Button
+            type="primary"
+            style={{marginBottom: "8px"}}
+            loading={loading}
+            onClick={() => {
+              const authKeys = checkedKeys.filter(it => it.startsWith("a-")).map(it => it.substr(it.indexOf("-") + 1));
+              const authIds = authKeys.join(',');
+              dispatch({
+                type: 'roles/changeRoleAuths',
+                payload: {
+                  id: roleId,
+                  values: {
+                    authIds: authIds
+                  }
+                },
+              });
+            }}>
             保存
           </Button>
 
@@ -321,7 +231,9 @@ const Roles = ({dispatch, list: dataSource, loading, total, page: current, auths
 
         </Col>
       </Row>
+
     </div>
+
   )
 };
 

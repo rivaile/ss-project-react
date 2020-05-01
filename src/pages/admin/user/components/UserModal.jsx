@@ -4,7 +4,8 @@ import {Button, Modal, Form, Input, Radio, Cascader, TreeSelect, Select, Row, Co
 const {Option} = Select;
 
 
-const UserModal = ({onCreate, record, children}) => {
+const UserModal = ({onCreate, record, children, deptTree}) => {
+
   const [form] = Form.useForm();
 
   const [visible, setVisible] = useState(false);
@@ -116,22 +117,7 @@ const UserModal = ({onCreate, record, children}) => {
                 },
               ]}>
               <TreeSelect
-                treeData={[
-                  {
-                    title: '技术部',
-                    value: '0',
-                    children: [
-                      {
-                        title: 'android',
-                        value: '1',
-                      },
-                      {
-                        title: 'java',
-                        value: '2',
-                      },
-                    ],
-                  },
-                ]}
+                treeData={deptTree}
               />
           </Form.Item>
           </Col>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Col, Form, Input, Modal, Row, Select, TreeSelect} from 'antd';
 
-const DeptModal = ({onCreate, onCancel, record, deptTree, visible}) => {
+const DeptModal = ({action, onCreate, onCancel, record, deptTree, visible}) => {
 
   const [form] = Form.useForm();
 
@@ -18,7 +18,7 @@ const DeptModal = ({onCreate, onCancel, record, deptTree, visible}) => {
   return (
     <Modal
       visible={visible}
-      title="创建部门"
+      title={action == 'create' ? "创建部门" : "编辑部门"}
       okText="确认"
       cancelText="取消"
       onCancel={() => {
@@ -58,13 +58,7 @@ const DeptModal = ({onCreate, onCancel, record, deptTree, visible}) => {
           <Col span={12}>
             <Form.Item
               name="parentId"
-              label="上级部门"
-              rules={[
-                {
-                  required: true,
-                  message: '请选择上级部门!',
-                },
-              ]}>
+              label="上级部门">
               <TreeSelect
                 treeData={deptTree}
               />

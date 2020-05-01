@@ -14,7 +14,6 @@ export default {
     },
 
     saveDept(state, {payload: {data: depts}}) {
-
       const deptTreeFun = (depts) => {
         return depts.map(it => {
           it.title = it.name;
